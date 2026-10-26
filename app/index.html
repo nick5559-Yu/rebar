@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#b2561d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="鋼筋查表">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>body{margin:0}[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}</style>
+</head><body>
+<title>鋼筋錨錠查表</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* 版面：頂部條件面板＋下方結果卡片，單欄手機優先，寬螢幕兩欄 */
+:root {
+  --bg: #eef0ee;
+  --surface: #ffffff;
+  --ink: #1d2422;
+  --muted: #5f6b67;
+  --line: #d3d9d6;
+  --accent: #b2561d;      /* 鏽紅：竹節鋼筋的顏色 */
+  --accent-ink: #ffffff;
+  --accent-soft: #f6e7dc;
+  --steel: #2f4a55;
+  --chip: #e2e7e4;
+  --warn-bg: #fff4d6;
+  --warn-ink: #7a5300;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151a19; --surface: #1f2624; --ink: #e8ece9; --muted: #9aa7a2; --line: #34403c;
+    --accent: #e08a52; --accent-ink: #1a1210; --accent-soft: #3a2a20; --steel: #9cc0cc; --chip: #2b3532;
+    --warn-bg: #3a3018; --warn-ink: #f0cf7a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151a19; --surface: #1f2624; --ink: #e8ece9; --muted: #9aa7a2; --line: #34403c;
+  --accent: #e08a52; --accent-ink: #1a1210; --accent-soft: #3a2a20; --steel: #9cc0cc; --chip: #2b3532;
+  --warn-bg: #3a3018; --warn-ink: #f0cf7a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+header.top .wrap { padding-block: 14px 10px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+h1 { font-size: 20px; font-weight: 900; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+.src { font-size: 12px; color: var(--muted); }
+
+/* 條件面板 */
+.panel { background: var(--surface); border-bottom: 1px solid var(--line); }
+.panel .wrap { padding-block: 10px 12px; display: grid; gap: 8px; }
+.row { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; }
+.row > .lbl { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .06em; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; padding-block: 2px; min-width: 0; }
+.chip {
+  flex: 0 0 auto; border: 1px solid transparent; background: var(--chip); color: var(--ink);
+  font: 500 14px/1 var(--font-body); padding: 9px 12px; border-radius: 8px; cursor: pointer; min-height: 38px;
+}
+.chip.num { font-family: var(--font-num); font-size: 13.5px; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.chip:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+.chip:focus-visible, select:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--steel); outline-offset: 2px; }
+.chip small { font-size: 11px; opacity: .8; margin-left: 3px; }
+select { font: 500 14px var(--font-body); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-height: 38px; width: 100%; max-width: 420px; }
+
+/* 結果 */
+main .wrap { padding-block: 16px 40px; display: grid; gap: 14px; }
+.summary { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 13px; color: var(--muted); }
+.summary b { color: var(--ink); }
+.copy { margin-left: auto; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 13px var(--font-body); padding: 7px 12px; border-radius: 8px; cursor: pointer; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.card .k { display: flex; align-items: baseline; gap: 8px; }
+.card .sym { font: 600 15px var(--font-num); color: var(--accent); }
+.card .name { font-size: 13px; color: var(--muted); font-weight: 500; }
+.val { font: 600 40px/1.05 var(--font-num); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.val .u { font: 500 15px var(--font-body); color: var(--muted); margin-left: 4px; }
+.val.na { font-size: 18px; font-family: var(--font-body); color: var(--muted); font-weight: 500; }
+.note { font-size: 12.5px; color: var(--muted); }
+.flag { font-size: 12.5px; background: var(--warn-bg); color: var(--warn-ink); padding: 6px 8px; border-radius: 6px; }
+.mods { display: grid; gap: 4px; font-size: 13px; }
+.mods label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.mods input { width: 18px; height: 18px; accent-color: var(--accent); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 14px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+.wide { grid-column: 1 / -1; }
+h2 { font-size: 15px; margin: 6px 0 0; font-weight: 700; }
+.hookrow { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.hook { display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: center; }
+.hook svg { width: 96px; height: 96px; }
+.hook svg .bar { fill: none; stroke: var(--steel); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.hook svg .dim { stroke: var(--accent); stroke-width: 1.2; fill: none; }
+.hook svg text { fill: var(--accent); font: 600 11px var(--font-num); }
+.tblwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-size: 12px; color: var(--muted); font-weight: 700; background: var(--bg); }
+td { font-family: var(--font-num); }
+tr.cur td { background: var(--accent-soft); font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; }
+summary { cursor: pointer; font-weight: 700; font-size: 14px; }
+details ol { margin: 8px 0 4px; padding-left: 20px; font-size: 13.5px; display: grid; gap: 4px; }
+footer { font-size: 12px; color: var(--muted); }
+@media (min-width: 760px) {
+  .row { grid-template-columns: 64px 1fr; }
+  .val { font-size: 46px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top"><div class="wrap">
+  <h1>鋼筋錨錠查表</h1>
+  <span class="src">依 S7-02 結構施工標準圖（二）錨錠與標準彎鉤・單位 cm、kgf/cm²</span>
+</div></header>
+
+<section class="panel" aria-label="查詢條件"><div class="wrap">
+  <div class="row"><span class="lbl">構件</span><div class="chips" id="c-member" role="group" aria-label="構件"></div></div>
+  <div class="row" id="row-pos"><span class="lbl">位置</span><div class="chips" id="c-pos" role="group" aria-label="鋼筋位置"></div></div>
+  <div class="row"><span class="lbl">fy</span><div class="chips" id="c-fy" role="group" aria-label="鋼筋降伏強度"></div></div>
+  <div class="row"><span class="lbl">fc'</span><div class="chips" id="c-fc" role="group" aria-label="混凝土強度"></div></div>
+  <div class="row"><span class="lbl">號數</span><div class="chips" id="c-bar" role="group" aria-label="鋼筋號數"></div></div>
+  <div class="row"><span class="lbl">環境</span><select id="s-env" aria-label="保護層環境條件"></select></div>
+</div></section>
+
+<main><div class="wrap">
+  <div class="summary"><span id="sum"></span><button class="copy" id="btn-copy" type="button">複製結果</button></div>
+
+  <div class="grid">
+    <div class="card" id="card-ld"></div>
+    <div class="card" id="card-ls"></div>
+    <div class="card" id="card-ldh"></div>
+    <div class="card" id="card-ldt"></div>
+    <div class="card" id="card-cover"></div>
+    <div class="card" id="card-spec"></div>
+  </div>
+
+  <h2>標準彎鉤尺寸</h2>
+  <div class="hookrow" id="hooks"></div>
+
+  <h2 id="cmp-title">同條件各號數比較</h2>
+  <div class="tblwrap"><table id="cmp"></table></div>
+
+  <details>
+    <summary>圖說附註</summary>
+    <ol>
+      <li>使用錨錠／搭接表時，鋼筋須有箍筋圍束，鋼筋淨間距需 1.0db 以上，並達最低箍筋量要求。</li>
+      <li>頂層鋼筋指水平鋼筋下方混凝土一次澆置厚度大於 30cm 者。</li>
+      <li>經現場狀況檢核搭接長度後施工性不佳者，應改用其他錨定或續接（續接器、銲接等）方式。</li>
+      <li>板、牆構材使用本表時，主筋心到心間距不小於 10cm；D10~D19 最小淨保護層 ≥2.0cm，D22~D36 ≥4.0cm。</li>
+      <li>標準彎鉤側面保護層須大於 6.5cm；90° 彎鉤直線延長段應置於柱或邊構材圍束區內，且保護層大於 5cm。不符合者 Ldh ×1.3；伸展長度內配置 3db 間距箍筋者 ×0.8。</li>
+      <li>梁在不連續支承上，應以標準彎鉤錨定之。鋼筋受壓時不計彎鉤之伸展效應。</li>
+      <li>擴頭竹節鋼筋宜符合 ASTM A970 附錄 A1 之 HA 級擴頭；側面保護層應大於 6.5cm，擴頭應延伸至柱核心區之遠端面；梁端錨定長度取 max(ℓdt, 梁深/1.5)。</li>
+      <li>不符本表條件或情況特殊者，依設計規範 5.6 及 15.6.4 相關規定計算。設計規範為土木 401-112《混凝土工程設計規範與解說》。</li>
+    </ol>
+  </details>
+
+  <footer>表值依圖面判讀輸入，與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-26</footer>
+</div></main>
+
+<script>
+const DATA = {"source":"永信 SD 結構圖 S7-02 結構施工標準圖（二）錨錠與標準彎鉤（張號 109/123，PDF 第 110 頁）","bars":{"D10":{"no":"#3","db":9.53,"area":0.713,"w":0.56},"D13":{"no":"#4","db":12.7,"area":1.267,"w":0.994},"D16":{"no":"#5","db":15.9,"area":1.986,"w":1.56},"D19":{"no":"#6","db":19.1,"area":2.865,"w":2.25},"D22":{"no":"#7","db":22.2,"area":3.871,"w":3.04},"D25":{"no":"#8","db":25.4,"area":5.067,"w":3.98},"D32":{"no":"#10","db":32.2,"area":8.143,"w":6.39},"D36":{"no":"#11","db":35.8,"area":10.07,"w":7.9}},"fcLd":[210,245,280,315,350,385,420,490],"fcLdh":[210,280,315,350,385,420,490,560],"ld":{"beam":{"Ld_top":{"2800":{"D10":37},"4200":{"cols":["D13","D16","D19","D22","D25","D32","D36"],"210":[72,90,108,159,182,231,257],"245":[67,84,100,148,169,214,238],"280":[63,78,94,138,158,200,222],"315":[59,74,89,130,149,189,210],"350":[56,70,84,124,141,179,199],"385":[54,67,80,118,135,171,190],"420":[51,64,77,113,129,163,182],"490":[47,59,71,105,120,151,168]},"5000":{"cols":["D25","D32","D36"],"210":[217,275,306],"245":[201,255,283],"280":[188,238,265],"315":[177,225,250],"350":[168,213,237],"385":[160,203,226],"420":[154,195,216],"490":[142,180,200]}},"Ld_gen":{"2800":{"D10":30},"4200":{"cols":["D13","D16","D19","D22","D25","D32","D36"],"210":[56,70,84,123,140,178,198],"245":[52,64,77,114,130,165,183],"280":[48,60,72,106,122,154,171],"315":[46,57,68,100,115,145,161],"350":[43,54,65,95,109,138,153],"385":[41,52,62,91,104,131,146],"420":[40,49,59,87,99,126,140],"490":[37,46,55,81,92,117,130]},"5000":{"cols":["D25","D32","D36"],"210":[167,212,235],"245":[155,196,218],"280":[145,183,204],"315":[136,173,192],"350":[129,164,182],"385":[123,156,174],"420":[118,150,166],"490":[110,139,154]}},"Ls_top":{"2800":{"D10":48},"4200":{"cols":["D13","D16","D19","D22","D25","D32","D36"],"210":[94,117,141,207,237,300,334],"245":[87,109,130,192,219,278,309],"280":[81,102,122,179,205,260,289],"315":[77,96,115,169,194,245,273],"350":[73,91,109,161,184,233,259],"385":[69,87,104,153,175,222,247],"420":[66,83,100,147,168,212,236],"490":[62,77,92,136,155,197,219]},"5000":{"cols":["D25","D32","D36"],"210":[282,357,397],"245":[261,331,368],"280":[244,309,344],"315":[230,292,324],"350":[218,277,308],"385":[208,264,293],"420":[199,253,281],"490":[185,234,260]}},"Ls_gen":{"2800":{"D10":33},"4200":{"cols":["D13","D16","D19","D22","D25","D32","D36"],"210":[72,90,108,159,182,231,257],"245":[67,84,100,148,169,214,238],"280":[63,78,94,138,158,200,222],"315":[59,74,89,130,149,189,210],"350":[56,70,84,124,141,179,199],"385":[54,67,80,118,135,171,190],"420":[51,64,77,113,129,163,182],"490":[47,59,71,105,120,151,168]},"5000":{"cols":["D25","D32","D36"],"210":[217,275,306],"245":[201,255,283],"280":[188,238,265],"315":[177,225,250],"350":[168,213,237],"385":[160,203,226],"420":[154,195,216],"490":[142,180,200]}}},"slab":{"Ld_top":{"2800":{"D10":30},"4200":{"cols":["D13","D16","D19","D22","D25","D32","D36"],"210":[52,77,104,105,137,220,270],"245":[48,71,97,97,126,203,250],"280":[45,67,91,91,118,190,234],"315":[43,63,85,85,112,179,221],"350":[41,60,81,81,106,170,209],"385":[39,57,77,77,101,162,200],"420":[37,54,74,74,97,155,191],"490":[34,50,69,69,90,144,177]},"5000":{"cols":["D25","D32","D36"],"210":[163,261,322],"245":[151,242,299],"280":[141,226,279],"315":[133,213,263],"350":[126,202,250],"385":[120,193,238],"420":[115,185,228],"490":[107,171,211]}},"Ld_gen":{"2800":{"D10":30},"4200":{"cols":["D13","D16","D19","D22","D25","D32","D36"],"210":[40,59,80,81,105,169,208],"245":[37,55,75,75,97,157,193],"280":[35,51,70,70,91,146,180],"315":[33,48,66,66,86,138,170],"350":[31,46,62,63,82,131,161],"385":[30,44,60,60,78,125,154],"420":[30,42,57,57,74,120,147],"490":[30,39,53,53,69,111,136]},"5000":{"cols":["D25","D32","D36"],"210":[125,201,248],"245":[116,186,230],"280":[108,174,215],"315":[102,164,203],"350":[97,156,192],"385":[93,148,183],"420":[89,142,176],"490":[82,132,163]}},"Ls_top":{"2800":{"D10":30},"4200":{"cols":["D13","D16","D19","D22","D25","D32","D36"],"210":[68,100,136,136,177,285,351],"245":[63,92,126,126,164,264,325],"280":[59,86,118,118,154,247,304],"315":[55,81,111,111,145,233,287],"350":[53,77,105,105,137,221,272],"385":[50,74,100,100,131,211,260],"420":[48,71,96,96,126,202,248],"490":[45,65,89,89,116,187,230]},"5000":{"cols":["D25","D32","D36"],"210":[211,339,419],"245":[196,314,388],"280":[183,294,363],"315":[173,277,342],"350":[164,263,325],"385":[156,251,310],"420":[149,240,296],"490":[138,222,274]}},"Ls_gen":{"2800":{"D10":30},"4200":{"cols":["D13","D16","D19","D22","D25","D32","D36"],"210":[52,77,104,105,137,220,270],"245":[48,71,97,97,126,203,250],"280":[45,67,91,91,118,190,234],"315":[43,63,85,85,112,179,221],"350":[41,60,81,81,106,170,209],"385":[39,57,77,77,101,162,200],"420":[37,54,74,74,97,155,191],"490":[34,50,69,69,90,144,177]},"5000":{"cols":["D25","D32","D36"],"210":[163,261,322],"245":[151,242,299],"280":[141,226,279],"315":[133,213,263],"350":[126,202,250],"385":[120,193,238],"420":[115,185,228],"490":[107,171,211]}}}},"ldh":{"2800":{"cols":["D10"],"rows":{"D10":[15,15,15,15,15,15,15,15]}},"4200":{"rows":{"D13":[23,20,19,18,17,16,15,15],"D16":[28,24,23,22,21,20,19,17],"D19":[34,29,28,26,25,24,22,21],"D22":[39,34,32,30,29,28,26,24],"D25":[45,39,37,35,33,32,29,28],"D32":[56,49,46,44,42,40,37,35],"D36":[63,54,51,49,46,45,43,43]}},"5000":{"rows":{"D25":[53,46,43,41,39,38,35,33],"D32":[67,58,55,52,50,48,44,42],"D36":[75,65,61,58,55,53,51,51]}}},"ldt":{"4200":{"rows":{"D19":[34,29,28,26,25,24,22,21],"D22":[39,34,32,30,29,28,26,24],"D25":[45,39,37,35,33,32,29,28],"D32":[56,49,46,44,42,40,37,35],"D36":[63,54,51,49,46,45,41,39]}},"5000":{"rows":{"D25":[53,46,43,41,39,38,35,33],"D32":[67,58,55,52,50,48,44,41],"D36":[75,65,61,58,55,53,49,46]}}},"hookMain":{"D10":[16,10.5],"D13":[22,12],"D16":[26,13],"D19":[31,15.5],"D22":[36,18],"D25":[42,20],"D32":[56,29],"D36":[61,33]},"hookTie":{"D10":[9,10.5],"D13":[12,12],"D16":[14.5,14.5],"D19":[31,19.5]}};
+
+const MEMBERS = [
+  { id: 'beam',  name: '梁',     tbl: 'beam', top: true,  cover: 'bc' },
+  { id: 'col',   name: '柱',     tbl: 'beam', top: false, cover: 'bc' },
+  { id: 'dwall', name: '連續壁', tbl: 'beam', top: false, cover: 'sw' },
+  { id: 'fslab', name: '基礎版', tbl: 'slab', top: true,  cover: 'bc' },
+  { id: 'slab',  name: '板',     tbl: 'slab', top: true,  cover: 'sw' },
+  { id: 'wall',  name: '牆',     tbl: 'slab', top: false, cover: 'sw' },
+];
+const BARS = ['D10','D13','D16','D19','D22','D25','D32','D36'];
+const FYS = ['2800','4200','5000'];
+const FCS = [210,245,280,315,350,385,420,490,560];
+const ENVS = [
+  { id: 'dry',  name: '不受風雨侵襲且不接觸土壤' },
+  { id: 'wet',  name: '受風雨侵襲或與土壤接觸' },
+  { id: 'soil', name: '直接澆置於土壤／岩石，或經常與水及土壤接觸' },
+  { id: 'sea',  name: '與海水或腐蝕性環境接觸' },
+];
+// 保護層表：[板牆格柵, 梁柱及基礎]
+const COVER = {
+  dry:  { small: [2.0, 4.0], big: [2.0, 4.0] },
+  wet:  { small: [4.0, 4.0], big: [5.0, 5.0] },
+  soil: { small: [7.5, 7.5], big: [7.5, 7.5] },
+  sea:  { small: [10.0, 10.0], big: [10.0, 10.0] },
+};
+const MEMBER_LABEL = { beam: '梁、柱、連續壁表', slab: '基礎版、板、牆表' };
+
+const state = { member: 'beam', pos: 'top', fy: '4200', fc: 280, bar: 'D25', env: 'dry', m13: false, m08: false };
+try {
+  const saved = JSON.parse(localStorage.getItem('rebar-lookup') || 'null');
+  if (saved && typeof saved === 'object') Object.assign(state, saved);
+} catch (e) {}
+
+const $ = (id) => document.getElementById(id);
+const barNo = (b) => DATA.bars[b].no;
+
+// 依 fc' 取表值；表中沒有該 fc' 時取較低一級（較長、保守）
+function pickFc(list, fc) {
+  if (list.includes(fc)) return { fc, fallback: false };
+  const lower = list.filter((x) => x < fc);
+  return { fc: lower.length ? lower[lower.length - 1] : list[0], fallback: true };
+}
+
+function ldLookup(tblKey, kind, fy, fc, bar) {
+  const t = DATA.ld[tblKey][kind][fy];
+  if (fy === '2800') {
+    if (bar !== 'D10') return null;
+    return { v: t.D10, fc: '210~490', fallback: fc > 490 };
+  }
+  const i = t.cols.indexOf(bar);
+  if (i < 0) return null;
+  const p = pickFc(DATA.fcLd, fc);
+  return { v: t[String(p.fc)][i], fc: p.fc, fallback: p.fallback };
+}
+
+function rowLookup(tbl, fy, fc, bar) {
+  const t = tbl[fy];
+  if (!t || !t.rows[bar]) return null;
+  const p = pickFc(DATA.fcLdh, fc);
+  return { v: t.rows[bar][DATA.fcLdh.indexOf(p.fc)], fc: p.fc, fallback: p.fallback };
+}
+
+function barAvailable(fy, bar) {
+  const t = DATA.ld.beam.Ld_gen[fy];
+  return fy === '2800' ? bar === 'D10' : t.cols.includes(bar);
+}
+
+function chipGroup(el, items, cur, onPick, opts = {}) {
+  el.innerHTML = '';
+  items.forEach((it) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (opts.num ? ' num' : '');
+    b.innerHTML = it.html || it.label;
+    b.setAttribute('aria-pressed', String(it.value === cur));
+    if (it.disabled) { b.disabled = true; b.title = it.title || ''; }
+    b.addEventListener('click', () => onPick(it.value));
+    el.appendChild(b);
+  });
+}
+
+function save() {
+  try { localStorage.setItem('rebar-lookup', JSON.stringify(state)); } catch (e) {}
+}
+
+function card(el, sym, name, valueHtml, notes) {
+  el.innerHTML = `<div class="k"><span class="sym">${sym}</span><span class="name">${name}</span></div>${valueHtml}${notes.join('')}`;
+}
+const valHtml = (v) => v == null ? '<div class="val na">本表未列</div>' : `<div class="val">${v}<span class="u">cm</span></div>`;
+const fcNote = (r) => r && r.fallback ? `<div class="flag">表列無 fc'=${state.fc}，保守採 fc'=${r.fc} 之表值</div>` : '';
+
+let copyText = '';
+
+function render() {
+  const m = MEMBERS.find((x) => x.id === state.member) || MEMBERS[0];
+  if (!m.top) state.pos = 'gen';
+  if (!barAvailable(state.fy, state.bar)) {
+    // 改選可用號數中最接近原選擇者
+    const cur = BARS.indexOf(state.bar);
+    const ok = BARS.filter((b) => barAvailable(state.fy, b));
+    state.bar = ok.reduce((a, b) => Math.abs(BARS.indexOf(b) - cur) < Math.abs(BARS.indexOf(a) - cur) ? b : a);
+  }
+  save();
+
+  chipGroup($('c-member'), MEMBERS.map((x) => ({ value: x.id, label: x.name })), state.member, (v) => { state.member = v; render(); });
+  $('row-pos').hidden = !m.top;
+  chipGroup($('c-pos'), [{ value: 'top', label: '頂層拉力筋' }, { value: 'gen', label: '一般拉力筋' }], state.pos, (v) => { state.pos = v; render(); });
+  chipGroup($('c-fy'), FYS.map((x) => ({ value: x, label: x })), state.fy, (v) => { state.fy = v; render(); }, { num: true });
+  chipGroup($('c-fc'), FCS.map((x) => ({ value: x, label: String(x) })), state.fc, (v) => { state.fc = v; render(); }, { num: true });
+  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${b}<small>${barNo(b)}</small>`, disabled: !barAvailable(state.fy, b), title: `fy=${state.fy} 本表未列` })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
+  const envSel = $('s-env');
+  if (!envSel.options.length) {
+    ENVS.forEach((e) => { const o = document.createElement('option'); o.value = e.id; o.textContent = e.name; envSel.appendChild(o); });
+    envSel.addEventListener('change', () => { state.env = envSel.value; render(); });
+  }
+  envSel.value = state.env;
+
+  const posName = state.pos === 'top' ? '頂層拉力筋' : '一般拉力筋';
+  const tblName = MEMBER_LABEL[m.tbl];
+  const ld = ldLookup(m.tbl, state.pos === 'top' ? 'Ld_top' : 'Ld_gen', state.fy, state.fc, state.bar);
+  const ls = ldLookup(m.tbl, state.pos === 'top' ? 'Ls_top' : 'Ls_gen', state.fy, state.fc, state.bar);
+  const ldh = rowLookup(DATA.ldh, state.fy, state.fc, state.bar);
+  const ldt = rowLookup(DATA.ldt, state.fy, state.fc, state.bar);
+  const spec = DATA.bars[state.bar];
+
+  $('sum').innerHTML = `<b>${m.name}</b>${m.top ? '・' + posName : ''}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${state.bar}</b>（${barNo(state.bar)}）`;
+
+  card($('card-ld'), 'Ld', '受拉錨錠長度', valHtml(ld?.v), [
+    `<div class="note">${tblName}・${posName}${state.fy === '2800' && ld ? '・fc\' 210~490 同值' : ''}</div>`, fcNote(ld)]);
+  card($('card-ls'), 'Ls', '受拉搭接長度（乙級）', valHtml(ls?.v), [
+    `<div class="note">${tblName}・${posName}・相鄰搭接以錯開為原則</div>`, fcNote(ls)]);
+
+  let ldhAdj = null;
+  if (ldh) {
+    let f = 1;
+    if (state.m13) f *= 1.3;
+    if (state.m08) f *= 0.8;
+    ldhAdj = f === 1 ? null : Math.ceil(ldh.v * f);
+  }
+  card($('card-ldh'), 'Ldh', '標準彎鉤伸展長度', valHtml(ldhAdj ?? ldh?.v), [
+    ldhAdj != null ? `<div class="note">表值 ${ldh.v} cm × 修正係數，無條件進位</div>` : '<div class="note">側保護層 &gt; 6.5cm、尾端保護層 &gt; 5cm 時之表值</div>',
+    ldh ? `<div class="mods">
+      <label><input type="checkbox" id="m13" ${state.m13 ? 'checked' : ''}> 不符合上述保護層條件 ×1.3</label>
+      <label><input type="checkbox" id="m08" ${state.m08 ? 'checked' : ''}> 伸展長度內配 3db 間距箍筋 ×0.8</label></div>` : '',
+    fcNote(ldh)]);
+  const m13 = $('m13'), m08 = $('m08');
+  if (m13) m13.addEventListener('change', () => { state.m13 = m13.checked; render(); });
+  if (m08) m08.addEventListener('change', () => { state.m08 = m08.checked; render(); });
+
+  const beamDepthNote = state.member === 'beam' ? '<div class="note">梁端錨定取 max(ℓdt, 梁深/1.5)</div>' : '';
+  card($('card-ldt'), 'Ldt', '擴頭錨定伸展長度', valHtml(ldt?.v), [
+    ldt ? beamDepthNote : '<div class="note">本表僅列 fy 4200 之 D19~D36、fy 5000 之 D25~D36</div>', fcNote(ldt)]);
+
+  const big = BARS.indexOf(state.bar) >= BARS.indexOf('D19');
+  const col = m.cover === 'sw' ? 0 : 1;
+  const cv = COVER[state.env][big ? 'big' : 'small'][col];
+  const coverCol = m.cover === 'sw' ? '板、牆、格柵' : '梁、柱及基礎';
+  const slabNote = m.tbl === 'slab' && m.id !== 'fslab'
+    ? `<div class="note">板、牆使用錨錠表時：${big && state.bar !== 'D19' ? 'D22~D36 淨保護層 ≥4.0' : 'D10~D19 淨保護層 ≥2.0'} cm</div>` : '';
+  card($('card-cover'), 'c', '鋼筋最小保護層', `<div class="val">${cv.toFixed(1)}<span class="u">cm</span></div>`, [
+    `<div class="note">${coverCol}・${big ? 'D19~D36' : '≤ D16'}・${ENVS.find((e) => e.id === state.env).name}</div>`,
+    slabNote,
+    '<div class="note">有橫向鋼筋者量至箍筋表面；無者量至外層主筋表面</div>']);
+
+  const db = spec.db / 10;
+  card($('card-spec'), state.bar, `CNS 竹節鋼筋 ${barNo(state.bar)}`, `<dl class="kv">
+      <dt>直徑 db</dt><dd>${spec.db} mm</dd>
+      <dt>斷面積</dt><dd>${spec.area} cm²</dd>
+      <dt>單位重</dt><dd>${spec.w.toFixed(3)} kgf/m</dd>
+      <dt>撓曲淨距</dt><dd>≥ ${Math.max(2.5, db).toFixed(1)} cm</dd>
+      <dt>受壓淨距</dt><dd>≥ ${Math.max(4.0, 1.5 * db).toFixed(1)} cm</dd></dl>`,
+    ['<div class="note">淨距另須 ≥ 1.33 倍粗粒料粒徑；束筋 D′：2 根 1.4db、3 根 1.7db、4 根 2.0db</div>']);
+
+  renderHooks(spec);
+  renderCompare(m);
+
+  const lines = [
+    `【鋼筋錨錠查表】${m.name}${m.top ? ' ' + posName : ''} fy=${state.fy} fc'=${state.fc} ${state.bar}(${barNo(state.bar)})`,
+    `Ld 受拉錨錠：${ld ? ld.v + ' cm' : '本表未列'}`,
+    `Ls 受拉搭接（乙級）：${ls ? ls.v + ' cm' : '本表未列'}`,
+    `Ldh 標準彎鉤：${ldh ? (ldhAdj ?? ldh.v) + ' cm' + (ldhAdj != null ? `（表值 ${ldh.v}×修正）` : '') : '本表未列'}`,
+    `Ldt 擴頭錨定：${ldt ? ldt.v + ' cm' : '本表未列'}`,
+    `最小保護層：${cv.toFixed(1)} cm（${coverCol}，${ENVS.find((e) => e.id === state.env).name}）`,
+    `依 S7-02 結構施工標準圖（二）`,
+  ];
+  if ([ld, ls, ldh, ldt].some((r) => r && r.fallback)) lines.splice(6, 0, `※ fc'=${state.fc} 不在表列者，採較低一級 fc' 表值`);
+  copyText = lines.join('\n');
+}
+
+function renderHooks(spec) {
+  const b = state.bar;
+  const db = spec.db / 10;
+  const main = DATA.hookMain[b];
+  const smallBar = BARS.indexOf(b) <= BARS.indexOf('D25');
+  const Dm = smallBar ? 6 : 8;
+  const tie = DATA.hookTie[b];
+  const Dt = BARS.indexOf(b) <= BARS.indexOf('D16') ? 4 : 6;
+  const A2 = BARS.indexOf(b) <= BARS.indexOf('D16') ? 6 : 12;
+  const hook90 = `<svg viewBox="0 0 96 96" aria-hidden="true">
+      <path class="bar" d="M14 12 H48 a12 12 0 0 1 12 12 V84"/>
+      <path class="dim" d="M80 24 V84 M76 24 H84 M76 84 H84"/><text x="70" y="58" transform="rotate(-90 70 58)">L1</text></svg>`;
+  const hook180 = `<svg viewBox="0 0 96 96" aria-hidden="true">
+      <path class="bar" d="M8 30 H62 a16 16 0 0 1 0 32 H40"/>
+      <path class="dim" d="M40 80 H82 M40 76 V84 M82 76 V84"/><text x="55" y="94">L2</text></svg>`;
+  const hook135 = `<svg viewBox="0 0 96 96" aria-hidden="true">
+      <path class="bar" d="M8 20 H58 a12 12 0 0 1 8 20 L40 70"/>
+      <path class="dim" d="M48 80 L74 52"/><text x="64" y="82">L3</text></svg>`;
+  let html = `
+    <div class="card hook">${hook90}<dl class="kv">
+      <dt>主筋 90°</dt><dd>L1 = ${main[0]} cm</dd>
+      <dt>A1 = 12db</dt><dd>${(12 * db).toFixed(1)} cm</dd>
+      <dt>彎曲內徑 D</dt><dd>${Dm}db = ${(Dm * db).toFixed(1)} cm</dd></dl></div>
+    <div class="card hook">${hook180}<dl class="kv">
+      <dt>主筋 180°</dt><dd>L2 = ${main[1]} cm</dd>
+      <dt>延伸 4db≥6.5</dt><dd>${Math.max(4 * db, 6.5).toFixed(1)} cm</dd>
+      <dt>彎曲內徑 D</dt><dd>${Dm}db = ${(Dm * db).toFixed(1)} cm</dd></dl></div>`;
+  if (tie) {
+    html += `<div class="card hook">${hook135}<dl class="kv">
+      <dt>箍筋 90°</dt><dd>L1 = ${tie[0]} cm</dd>
+      <dt>箍筋 135°</dt><dd>L3 = ${tie[1]} cm</dd>
+      <dt>A2 = ${A2}db</dt><dd>${(A2 * db).toFixed(1)} cm</dd>
+      <dt>彎曲內徑 D</dt><dd>${Dt}db = ${(Dt * db).toFixed(1)} cm</dd>
+      <dt>135° 延伸</dt><dd>6db≥7.5 → ${Math.max(6 * db, 7.5).toFixed(1)} cm</dd></dl>
+      ${b === 'D19' ? '<div class="flag">圖面 #6 箍筋 L1 標示 31cm（與主筋同值），使用前請與設計單位確認</div>' : ''}</div>`;
+  } else {
+    html += `<div class="card"><div class="note">箍筋／肋筋彎鉤尺寸僅列 #3~#6（D10~D19）</div></div>`;
+  }
+  $('hooks').innerHTML = html;
+}
+
+function renderCompare(m) {
+  const pos = state.pos === 'top' ? '頂層' : '一般';
+  $('cmp-title').textContent = `同條件各號數比較（${m.name}${m.top ? '・' + pos : ''}・fy ${state.fy}・fc' ${state.fc}）`;
+  const rows = BARS.map((b) => {
+    const ld = ldLookup(m.tbl, state.pos === 'top' ? 'Ld_top' : 'Ld_gen', state.fy, state.fc, b);
+    const ls = ldLookup(m.tbl, state.pos === 'top' ? 'Ls_top' : 'Ls_gen', state.fy, state.fc, b);
+    const ldh = rowLookup(DATA.ldh, state.fy, state.fc, b);
+    const ldt = rowLookup(DATA.ldt, state.fy, state.fc, b);
+    if (!ld && !ldh && !ldt) return '';
+    const c = (r) => r ? r.v + (r.fallback ? '*' : '') : '—';
+    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${b} <span style="opacity:.6">${barNo(b)}</span></td><td>${c(ld)}</td><td>${c(ls)}</td><td>${c(ldh)}</td><td>${c(ldt)}</td><td>${DATA.hookMain[b][0]}</td></tr>`;
+  }).join('');
+  $('cmp').innerHTML = `<thead><tr><th>號數</th><th>Ld</th><th>Ls</th><th>Ldh</th><th>Ldt</th><th>90° L1</th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+$('btn-copy').addEventListener('click', () => {
+  const btn = $('btn-copy');
+  const done = (ok) => { btn.textContent = ok ? '已複製' : '請手動選取'; setTimeout(() => { btn.textContent = '複製結果'; }, 1600); };
+  try {
+    navigator.clipboard.writeText(copyText).then(() => done(true), () => fallbackCopy(done));
+  } catch (e) { fallbackCopy(done); }
+});
+function fallbackCopy(done) {
+  const ta = document.createElement('textarea');
+  ta.value = copyText; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove(); done(ok);
+}
+
+render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body></html>
