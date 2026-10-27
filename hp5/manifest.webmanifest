@@ -1,0 +1,31 @@
+{
+  "name": "HP5 錨錠搭接查表",
+  "short_name": "HP5 搭接",
+  "description": "依 HP5 S7A-2 標準圖查詢 ℓd、ℓst、柱搭接、保護層與修正係數",
+  "lang": "zh-Hant",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eef0ee",
+  "theme_color": "#2f4a55",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
