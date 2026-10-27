@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#2f4a55">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HP5 搭接">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>body{margin:0}[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}</style>
+</head><body>
+<title>HP5 錨錠搭接查表</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* 版面：頂部條件面板＋下方結果卡片，單欄手機優先，寬螢幕兩欄（與 S7-02 查表同一套樣式） */
+:root {
+  --bg: #eef0ee;
+  --surface: #ffffff;
+  --ink: #1d2422;
+  --muted: #5f6b67;
+  --line: #d3d9d6;
+  --accent: #b2561d;
+  --accent-ink: #ffffff;
+  --accent-soft: #f6e7dc;
+  --steel: #2f4a55;
+  --chip: #e2e7e4;
+  --warn-bg: #fff4d6;
+  --warn-ink: #7a5300;
+  --bad-bg: #fde4e1;
+  --bad-ink: #9c2b1f;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151a19; --surface: #1f2624; --ink: #e8ece9; --muted: #9aa7a2; --line: #34403c;
+    --accent: #e08a52; --accent-ink: #1a1210; --accent-soft: #3a2a20; --steel: #9cc0cc; --chip: #2b3532;
+    --warn-bg: #3a3018; --warn-ink: #f0cf7a; --bad-bg: #3d211d; --bad-ink: #f3a497; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151a19; --surface: #1f2624; --ink: #e8ece9; --muted: #9aa7a2; --line: #34403c;
+  --accent: #e08a52; --accent-ink: #1a1210; --accent-soft: #3a2a20; --steel: #9cc0cc; --chip: #2b3532;
+  --warn-bg: #3a3018; --warn-ink: #f0cf7a; --bad-bg: #3d211d; --bad-ink: #f3a497; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+header.top .wrap { padding-block: 14px 10px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+h1 { font-size: 20px; font-weight: 900; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+.badge { font: 700 11px var(--font-body); letter-spacing: .08em; background: var(--warn-bg); color: var(--warn-ink); padding: 3px 8px; border-radius: 999px; }
+.src { font-size: 12px; color: var(--muted); }
+
+.panel { background: var(--surface); border-bottom: 1px solid var(--line); }
+.panel .wrap { padding-block: 10px 12px; display: grid; gap: 8px; }
+.row { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; }
+.row > .lbl { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .06em; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; padding-block: 2px; min-width: 0; }
+.chip {
+  flex: 0 0 auto; border: 1px solid transparent; background: var(--chip); color: var(--ink);
+  font: 500 14px/1 var(--font-body); padding: 9px 12px; border-radius: 8px; cursor: pointer; min-height: 38px;
+}
+.chip.num { font-family: var(--font-num); font-size: 13.5px; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.chip:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+.chip:focus-visible, select:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--steel); outline-offset: 2px; }
+.chip small { font-size: 11px; opacity: .8; margin-left: 3px; }
+select { font: 500 14px var(--font-body); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-height: 38px; width: 100%; max-width: 440px; }
+
+main .wrap { padding-block: 16px 40px; display: grid; gap: 14px; }
+.summary { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 13px; color: var(--muted); }
+.summary b { color: var(--ink); }
+.copy { margin-left: auto; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 13px var(--font-body); padding: 7px 12px; border-radius: 8px; cursor: pointer; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.card .k { display: flex; align-items: baseline; gap: 8px; }
+.card .sym { font: 600 15px var(--font-num); color: var(--accent); }
+.card .name { font-size: 13px; color: var(--muted); font-weight: 500; }
+.val { font: 600 40px/1.05 var(--font-num); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.val .u { font: 500 15px var(--font-body); color: var(--muted); margin-left: 4px; }
+.val.na { font-size: 18px; font-family: var(--font-body); color: var(--muted); font-weight: 500; }
+.base { font: 500 13px var(--font-num); color: var(--muted); }
+.note { font-size: 12.5px; color: var(--muted); }
+.flag { font-size: 12.5px; background: var(--warn-bg); color: var(--warn-ink); padding: 6px 8px; border-radius: 6px; }
+.flag.bad { background: var(--bad-bg); color: var(--bad-ink); }
+.mods { display: grid; gap: 10px; }
+.mods fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: 6px; }
+.mods legend { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .06em; padding: 0; margin-bottom: 4px; }
+.mods label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; font-size: 13.5px; }
+.mods input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); flex: 0 0 auto; }
+.factor { font: 600 13px var(--font-num); color: var(--accent); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 14px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+h2 { font-size: 15px; margin: 6px 0 0; font-weight: 700; }
+.tblwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-size: 12px; color: var(--muted); font-weight: 700; background: var(--bg); }
+td { font-family: var(--font-num); }
+td.sus { color: var(--bad-ink); font-weight: 700; }
+tr.cur td { background: var(--accent-soft); font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; }
+summary { cursor: pointer; font-weight: 700; font-size: 14px; }
+details ol { margin: 8px 0 4px; padding-left: 20px; font-size: 13.5px; display: grid; gap: 4px; }
+footer { font-size: 12px; color: var(--muted); }
+@media (min-width: 760px) {
+  .row { grid-template-columns: 64px 1fr; }
+  .val { font-size: 46px; }
+}
+</style>
+
+<header class="top"><div class="wrap">
+  <h1>HP5 錨錠搭接查表</h1>
+  <span class="src">依 HP5 S7A-2 結構施工標準圖（二）・單位 cm、kgf/cm²</span>
+</div></header>
+
+<section class="panel" aria-label="查詢條件"><div class="wrap">
+  <div class="row"><span class="lbl">構件</span><div class="chips" id="c-member" role="group" aria-label="構件"></div></div>
+  <div class="row" id="row-pos"><span class="lbl">位置</span><div class="chips" id="c-pos" role="group" aria-label="鋼筋位置"></div></div>
+  <div class="row"><span class="lbl">fy</span><div class="chips" id="c-fy" role="group" aria-label="鋼筋降伏強度"></div></div>
+  <div class="row"><span class="lbl">fc'</span><div class="chips" id="c-fc" role="group" aria-label="混凝土強度"></div></div>
+  <div class="row"><span class="lbl">號數</span><div class="chips" id="c-bar" role="group" aria-label="鋼筋號數"></div></div>
+  <div class="row"><span class="lbl">環境</span><select id="s-env" aria-label="保護層環境條件"></select></div>
+</div></section>
+
+<main><div class="wrap">
+  <div class="summary"><span id="sum"></span><button class="copy" id="btn-copy" type="button">複製結果</button></div>
+
+  <div class="grid">
+    <div class="card" id="card-ld"></div>
+    <div class="card" id="card-ls"></div>
+    <div class="card" id="card-cover"></div>
+    <div class="card" id="card-spec"></div>
+  </div>
+
+  <div class="card">
+    <div class="k"><span class="sym">×</span><span class="name">修正係數（附註 2、5、7）：勾選後上方 ℓd、ℓst 會自動乘上</span></div>
+    <div class="mods" id="mods"></div>
+  </div>
+
+  <h2 id="cmp-title">同條件各號數比較</h2>
+  <div class="tblwrap"><table id="cmp"></table></div>
+
+  <details>
+    <summary>圖說附註</summary>
+    <ol>
+      <li>使用本表時，待伸展或搭接之鋼筋淨間距不小於 d<sub>b</sub>、淨保護層至少 d<sub>b</sub>，且 ℓd 範圍內肋筋或箍筋不少於規範最小值；或淨間距至少 2d<sub>b</sub>、淨保護層至少 d<sub>b</sub>。</li>
+      <li>不符合上述規定者 ×1.50（原則以設計鋼筋檢討；增加之搭接鋼筋柱應內外搭接、梁應上下搭接）。輕質混凝土 ×1.33。環氧樹脂塗佈且淨保護層 &lt; 3d<sub>b</sub> 或淨間距 &lt; 6d<sub>b</sub> ×1.50（頂層鋼筋 ×1.31 = 1.7/1.3）；其他環氧塗佈 ×1.20。</li>
+      <li>頂層鋼筋指水平鋼筋下方新拌混凝土澆置厚度大於 30cm 者。</li>
+      <li>本表以外之伸展長度，依設計規範 25.4.2.4 節計算。</li>
+      <li>表列搭接長度為乙級搭接；符合規範 25.5.2.1 甲級搭接（搭接長度內鋼筋量 ≥ 分析值 2 倍，且搭接鋼筋面積 &lt; 50%）者可除以 1.3，但不得小於 30cm。</li>
+      <li>施工性不佳者，改用續接器或銲接等錨定或續接方式。</li>
+      <li>成束鋼筋之伸展長度：三根成束增加 20%，四根成束增加 33%。</li>
+      <li>D39（#12）不可搭接。</li>
+      <li>不同直徑之受拉鋼筋搭接時，搭接長度取大號數鋼筋 ℓd 與小號數鋼筋 ℓst 之較大值。</li>
+      <li>鋼筋最小淨距：撓曲構材（梁板）≥ 2.5cm、1.0d<sub>b</sub>、1.0D′ 或粗粒料徑 1.33 倍；受壓構材（柱牆）≥ 4.0cm、1.5d<sub>b</sub>、1.5D′ 或粗粒料徑 1.33 倍。束筋 D′：2 根 1.4d<sub>b</sub>、3 根 1.7d<sub>b</sub>、4 根 2.0d<sub>b</sub>。</li>
+    </ol>
+  </details>
+
+  <footer>表值由圖面 PDF 文字層直接抽取，紅字為疑似圖面筆誤、待設計單位確認。與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-27</footer>
+</div></main>
+
+<script>
+const DATA = {"source":"HP5 標準圖 S7A-2 結構施工標準圖（二）・張號 60/74・日期 114.01.06","ld":{"top":{"2800":{"280":{"D10":32,"D13":42,"D16":53},"315":{"D10":32,"D13":41,"D16":51},"350":{"D10":30,"D13":38,"D16":47},"385":{"D10":30,"D13":37,"D16":45},"420":{"D10":30,"D13":35,"D16":43},"490":{"D10":30,"D13":32,"D16":40},"560":{"D10":30,"D13":30,"D16":38}},"4200":{"280":{"D10":48,"D13":63,"D16":79,"D19":95,"D22":137,"D25":157,"D29":177,"D32":199,"D36":221,"D39":243},"315":{"D10":46,"D13":60,"D16":75,"D19":90,"D22":129,"D25":148,"D29":167,"D32":187,"D36":208,"D39":230},"350":{"D10":43,"D13":57,"D16":71,"D19":85,"D22":123,"D25":140,"D29":159,"D32":178,"D36":198,"D39":217},"385":{"D10":39,"D13":54,"D16":68,"D19":81,"D22":117,"D25":134,"D29":154,"D32":170,"D36":188,"D39":208},"420":{"D10":39,"D13":52,"D16":65,"D19":78,"D22":112,"D25":128,"D29":145,"D32":162,"D36":180,"D39":199},"490":{"D10":36,"D13":48,"D16":60,"D19":72,"D22":104,"D25":119,"D29":134,"D32":150,"D36":167,"D39":184},"560":{"D10":34,"D13":45,"D16":56,"D19":67,"D22":97,"D25":111,"D29":125,"D32":141,"D36":156,"D39":172}},"5000":{"280":{"D10":57,"D13":75,"D16":94,"D19":113,"D22":163,"D25":187,"D29":211,"D32":237,"D36":263,"D39":289},"350":{"D10":51,"D13":67,"D16":84,"D19":101,"D22":146,"D25":167,"D29":189,"D32":212,"D36":235,"D39":259},"420":{"D10":46,"D13":62,"D16":77,"D19":92,"D22":133,"D25":153,"D29":172,"D32":193,"D36":215,"D39":236},"490":{"D10":43,"D13":57,"D16":71,"D19":85,"D22":123,"D25":141,"D29":160,"D32":179,"D36":199,"D39":219},"560":{"D10":40,"D13":53,"D16":67,"D19":80,"D22":116,"D25":132,"D29":149,"D32":167,"D36":186,"D39":205}},"5600":{"280":{"D10":63,"D13":84,"D16":105,"D19":126,"D22":183,"D25":209,"D29":236,"D32":265,"D36":294,"D39":324},"350":{"D10":57,"D13":75,"D16":94,"D19":113,"D22":163,"D25":187,"D29":211,"D32":237,"D36":263,"D39":290},"420":{"D10":52,"D13":69,"D16":86,"D19":103,"D22":149,"D25":171,"D29":193,"D32":216,"D36":240,"D39":265},"490":{"D10":48,"D13":64,"D16":80,"D19":96,"D22":138,"D25":158,"D29":179,"D32":200,"D36":223,"D39":245},"560":{"D10":45,"D13":60,"D16":75,"D19":90,"D22":129,"D25":148,"D29":167,"D32":187,"D36":208,"D39":229}}},"gen":{"2800":{"280":{"D10":30,"D13":33,"D16":41},"315":{"D10":30,"D13":32,"D16":39},"350":{"D10":30,"D13":30,"D16":37},"385":{"D10":30,"D13":30,"D16":35},"420":{"D10":30,"D13":30,"D16":33},"490":{"D10":30,"D13":30,"D16":31},"560":{"D10":30,"D13":30,"D16":30}},"4200":{"280":{"D10":37,"D13":49,"D16":61,"D19":73,"D22":106,"D25":121,"D29":136,"D32":153,"D36":170,"D39":187},"315":{"D10":35,"D13":46,"D16":58,"D19":69,"D22":100,"D25":114,"D29":127,"D32":144,"D36":160,"D39":177},"350":{"D10":33,"D13":44,"D16":55,"D19":65,"D22":95,"D25":108,"D29":122,"D32":137,"D36":152,"D39":167},"385":{"D10":30,"D13":42,"D16":52,"D19":62,"D22":90,"D25":103,"D29":118,"D32":131,"D36":145,"D39":160},"420":{"D10":30,"D13":40,"D16":50,"D19":60,"D22":86,"D25":99,"D29":111,"D32":125,"D36":139,"D39":153},"490":{"D10":30,"D13":37,"D16":46,"D19":55,"D22":80,"D25":91,"D29":103,"D32":116,"D36":129,"D39":142},"560":{"D10":30,"D13":35,"D16":43,"D19":52,"D22":75,"D25":86,"D29":97,"D32":108,"D36":120,"D39":132}},"5000":{"280":{"D10":44,"D13":58,"D16":72,"D19":87,"D22":126,"D25":144,"D29":162,"D32":182,"D36":202,"D39":223},"350":{"D10":39,"D13":52,"D16":65,"D19":78,"D22":112,"D25":129,"D29":145,"D32":163,"D36":181,"D39":199},"420":{"D10":36,"D13":47,"D16":59,"D19":71,"D22":103,"D25":117,"D29":133,"D32":149,"D36":165,"D39":182},"490":{"D10":33,"D13":44,"D16":55,"D19":66,"D22":95,"D25":109,"D29":123,"D32":138,"D36":153,"D39":168},"560":{"D10":31,"D13":41,"D16":51,"D19":62,"D22":89,"D25":102,"D29":115,"D32":129,"D36":143,"D39":158}},"5600":{"280":{"D10":49,"D13":65,"D16":81,"D19":97,"D22":141,"D25":161,"D29":182,"D32":204,"D36":227,"D39":249},"350":{"D10":44,"D13":58,"D16":73,"D19":87,"D22":126,"D25":144,"D29":163,"D32":182,"D36":203,"D39":223},"420":{"D10":40,"D13":53,"D16":66,"D19":80,"D22":115,"D25":131,"D29":148,"D32":167,"D36":185,"D39":204},"490":{"D10":37,"D13":49,"D16":61,"D19":74,"D22":106,"D25":122,"D29":137,"D32":154,"D36":171,"D39":189},"560":{"D10":35,"D13":46,"D16":58,"D19":69,"D22":100,"D25":114,"D29":129,"D32":144,"D36":160,"D39":176}}}},"ls":{"top":{"2800":{"280":{"D10":41,"D13":55,"D16":69},"315":{"D10":40,"D13":53,"D16":66},"350":{"D10":37,"D13":49,"D16":61},"385":{"D10":36,"D13":47,"D16":58},"420":{"D10":34,"D13":45,"D16":56},"490":{"D10":31,"D13":42,"D16":52},"560":{"D10":30,"D13":39,"D16":49}},"4200":{"280":{"D10":62,"D13":82,"D16":103,"D19":123,"D22":178,"D25":204,"D29":230,"D32":258,"D36":287},"315":{"D10":60,"D13":77,"D16":97,"D19":116,"D22":168,"D25":192,"D29":210,"D32":243,"D36":271},"350":{"D10":55,"D13":74,"D16":92,"D19":110,"D22":159,"D25":182,"D29":206,"D32":231,"D36":257},"385":{"D10":51,"D13":70,"D16":88,"D19":105,"D22":152,"D25":174,"D29":201,"D32":220,"D36":245},"420":{"D10":51,"D13":67,"D16":84,"D19":101,"D22":146,"D25":166,"D29":188,"D32":211,"D36":234},"490":{"D10":47,"D13":62,"D16":78,"D19":93,"D22":135,"D25":154,"D29":174,"D32":195,"D36":217},"560":{"D10":44,"D13":58,"D16":73,"D19":87,"D22":126,"D25":144,"D29":163,"D32":183,"D36":203}},"5000":{"280":{"D10":79,"D13":105,"D16":132,"D19":158,"D22":229,"D25":262,"D29":296,"D32":332,"D36":369},"350":{"D10":71,"D13":94,"D16":118,"D19":142,"D22":205,"D25":234,"D29":265,"D32":297,"D36":330},"420":{"D10":65,"D13":86,"D16":108,"D19":129,"D22":187,"D25":214,"D29":242,"D32":271,"D36":301},"490":{"D10":60,"D13":80,"D16":100,"D19":120,"D22":173,"D25":198,"D29":224,"D32":251,"D36":279},"560":{"D10":56,"D13":75,"D16":93,"D19":112,"D22":162,"D25":185,"D29":209,"D32":235,"D36":261}},"5600":{"280":{"D10":94,"D13":126,"D16":157,"D19":189,"D22":273,"D25":312,"D29":353,"D32":396,"D36":440},"350":{"D10":85,"D13":112,"D16":141,"D19":169,"D22":244,"D25":279,"D29":316,"D32":354,"D36":393},"420":{"D10":77,"D13":103,"D16":128,"D19":154,"D22":223,"D25":255,"D29":288,"D32":323,"D36":359},"490":{"D10":71,"D13":95,"D16":119,"D19":143,"D22":206,"D25":236,"D29":267,"D32":299,"D36":333},"560":{"D10":67,"D13":89,"D16":111,"D19":134,"D22":193,"D25":221,"D29":250,"D32":280,"D36":311}}},"gen":{"2800":{"280":{"D10":32,"D13":42,"D16":53},"315":{"D10":32,"D13":41,"D16":51},"350":{"D10":30,"D13":38,"D16":47},"385":{"D10":30,"D13":36,"D16":45},"420":{"D10":30,"D13":35,"D16":43},"490":{"D10":30,"D13":32,"D16":40},"560":{"D10":30,"D13":30,"D16":38}},"4200":{"280":{"D10":48,"D13":63,"D16":79,"D19":95,"D22":137,"D25":157,"D29":177,"D32":199,"D36":221},"315":{"D10":46,"D13":60,"D16":75,"D19":90,"D22":129,"D25":148,"D29":167,"D32":187,"D36":208},"350":{"D10":43,"D13":57,"D16":71,"D19":85,"D22":123,"D25":140,"D29":159,"D32":178,"D36":198},"385":{"D10":39,"D13":54,"D16":68,"D19":81,"D22":117,"D25":134,"D29":155,"D32":170,"D36":188},"420":{"D10":39,"D13":52,"D16":65,"D19":78,"D22":112,"D25":128,"D29":145,"D32":162,"D36":180},"490":{"D10":36,"D13":48,"D16":60,"D19":72,"D22":104,"D25":119,"D29":134,"D32":150,"D36":167},"560":{"D10":34,"D13":45,"D16":56,"D19":67,"D22":97,"D25":111,"D29":125,"D32":141,"D36":156}},"5000":{"280":{"D10":61,"D13":81,"D16":102,"D19":122,"D22":176,"D25":202,"D29":228,"D32":255,"D36":284},"350":{"D10":55,"D13":73,"D16":91,"D19":109,"D22":158,"D25":180,"D29":204,"D32":228,"D36":254},"420":{"D10":50,"D13":66,"D16":83,"D19":100,"D22":144,"D25":165,"D29":186,"D32":209,"D36":232},"490":{"D10":46,"D13":62,"D16":77,"D19":92,"D22":133,"D25":152,"D29":172,"D32":193,"D36":215},"560":{"D10":43,"D13":58,"D16":72,"D19":86,"D22":125,"D25":143,"D29":161,"D32":181,"D36":201}},"5600":{"280":{"D10":73,"D13":97,"D16":121,"D19":145,"D22":210,"D25":240,"D29":271,"D32":304,"D36":338},"350":{"D10":65,"D13":87,"D16":108,"D19":130,"D22":188,"D25":215,"D29":243,"D32":272,"D36":303},"420":{"D10":59,"D13":79,"D16":99,"D19":119,"D22":172,"D25":196,"D29":222,"D32":249,"D36":276},"490":{"D10":55,"D13":73,"D16":92,"D19":110,"D22":159,"D25":182,"D29":205,"D32":230,"D36":256},"560":{"D10":52,"D13":69,"D16":86,"D19":103,"D22":149,"D25":170,"D29":192,"D32":215,"D36":239}}}},"lsCol":{"2800":{"280":{"D10":32,"D13":42,"D16":53},"315":{"D10":32,"D13":41,"D16":51},"350":{"D10":30,"D13":38,"D16":47},"385":{"D10":30,"D13":36,"D16":45},"420":{"D10":30,"D13":35,"D16":43},"490":{"D10":30,"D13":32,"D16":40}},"4200":{"280":{"D10":48,"D13":63,"D16":79,"D19":95,"D22":137,"D25":157,"D29":177,"D32":199,"D36":221},"315":{"D10":46,"D13":60,"D16":75,"D19":90,"D22":129,"D25":148,"D29":167,"D32":187,"D36":205},"350":{"D10":43,"D13":57,"D16":71,"D19":85,"D22":123,"D25":140,"D29":159,"D32":178,"D36":198},"385":{"D10":41,"D13":54,"D16":68,"D19":81,"D22":117,"D25":134,"D29":154,"D32":170,"D36":188},"420":{"D10":39,"D13":52,"D16":65,"D19":78,"D22":112,"D25":128,"D29":145,"D32":162,"D36":180},"490":{"D10":36,"D13":48,"D16":60,"D19":72,"D22":104,"D25":119,"D29":134,"D32":150,"D36":167}},"5000":{"280":{"D10":61,"D13":81,"D16":102,"D19":122,"D22":176,"D25":202,"D29":228,"D32":255,"D36":284},"350":{"D10":55,"D13":73,"D16":91,"D19":109,"D22":158,"D25":180,"D29":204,"D32":228,"D36":254},"420":{"D10":50,"D13":66,"D16":83,"D19":100,"D22":144,"D25":165,"D29":186,"D32":209,"D36":232},"490":{"D10":46,"D13":62,"D16":77,"D19":92,"D22":133,"D25":152,"D29":172,"D32":193,"D36":215}},"5600":{"280":{"D10":73,"D13":97,"D16":121,"D19":145,"D22":210,"D25":240,"D29":271,"D32":304,"D36":338},"350":{"D10":65,"D13":87,"D16":108,"D19":130,"D22":188,"D25":215,"D29":243,"D32":272,"D36":303},"420":{"D10":59,"D13":79,"D16":99,"D19":119,"D22":172,"D25":196,"D29":222,"D32":249,"D36":276},"490":{"D10":55,"D13":73,"D16":92,"D19":110,"D22":159,"D25":182,"D29":205,"D32":230,"D36":256}}},"bars":{"D10":{"no":"#3","db":9.53},"D13":{"no":"#4","db":12.7},"D16":{"no":"#5","db":15.9},"D19":{"no":"#6","db":19.1},"D22":{"no":"#7","db":22.2},"D25":{"no":"#8","db":25.4},"D29":{"no":"#9","db":28.7},"D32":{"no":"#10","db":32.2},"D36":{"no":"#11","db":35.8},"D39":{"no":"#12","db":38.7}},"suspects":[["ls_top","4200","315","D29","圖面為 210；依同欄 √fc' 比例與伸展長度 ×1.3 推算約 217，疑為筆誤"],["lsCol","4200","315","D36","柱搭接表為 205；一般搭接表同格為 208，兩表其餘數值皆相同"],["lsCol","4200","385","D10","柱搭接表為 41；一般搭接表同格為 39，兩表其餘數值皆相同"]]};
+
+const MEMBERS = [
+  { id: 'beam', name: '梁', top: true,  cover: 'beam', comp: false },
+  { id: 'slab', name: '版',  top: true,  cover: 'slab', comp: false },
+  { id: 'col',  name: '柱', top: false, cover: 'beam', comp: true },
+  { id: 'wall', name: '牆', top: false, cover: 'slab', comp: true },
+];
+const BARS = ['D10','D13','D16','D19','D22','D25','D29','D32','D36','D39'];
+const FYS = ['2800','4200','5000','5600'];
+const FCS = [280,315,350,385,420,490,560];
+const ENVS = [
+  { id: 'cast', name: '貼地澆置且永久接觸大地' },
+  { id: 'exp',  name: '暴露於大氣環境或接觸大地' },
+  { id: 'int',  name: '不暴露於大氣環境且不接觸大地' },
+  { id: 'sea',  name: '與海水或腐蝕性環境接觸' },
+];
+const SUS = {};
+DATA.suspects.forEach(([t, fy, fc, b, msg]) => { SUS[`${t}|${fy}|${fc}|${b}`] = msg; });
+
+const state = { member: 'beam', pos: 'top', fy: '4200', fc: 280, bar: 'D25', env: 'int',
+  mA: false, mLw: false, mEp: 'none', classA: false, bundle: 1 };
+try {
+  const saved = JSON.parse(localStorage.getItem('hp5-lookup') || 'null');
+  if (saved && typeof saved === 'object') Object.assign(state, saved);
+} catch (e) {}
+
+const $ = (id) => document.getElementById(id);
+const barNo = (b) => DATA.bars[b].no;
+
+// 依 fc' 取表值；表中沒有該 fc' 時取較低一級（較長、保守）
+function pick(rows, fc, bar) {
+  const list = Object.keys(rows).map(Number).sort((a, b) => a - b);
+  let use = fc, fallback = false;
+  if (!list.includes(fc)) {
+    const lower = list.filter((x) => x < fc);
+    use = lower.length ? lower[lower.length - 1] : list[0];
+    fallback = true;
+  }
+  const v = rows[String(use)] && rows[String(use)][bar];
+  return v == null ? null : { v, fc: use, fallback };
+}
+
+// 表名：ld_top / ld_gen / ls_top / ls_gen / lsCol
+function look(table, fy, fc, bar) {
+  const t = table === 'lsCol' ? DATA.lsCol : DATA[table.slice(0, 2)][table.slice(3)];
+  if (!t[fy]) return null;
+  const r = pick(t[fy], fc, bar);
+  if (r) r.sus = SUS[`${table}|${fy}|${r.fc}|${bar}`] || null;
+  return r;
+}
+
+function tables(m) {
+  const top = m.top && state.pos === 'top';
+  return {
+    ld: top ? 'ld_top' : 'ld_gen',
+    ls: m.id === 'col' ? 'lsCol' : (top ? 'ls_top' : 'ls_gen'),
+    ldName: top ? 'ⓐ 版、梁頂層拉力鋼筋' : 'ⓑ 版、梁、柱、牆一般拉力鋼筋',
+    lsName: m.id === 'col' ? '柱的竹節鋼筋搭接長度' : (top ? 'ⓒ 版、梁頂層拉力鋼筋' : 'ⓓ 版、梁、柱、牆一般拉力鋼筋'),
+  };
+}
+
+function barAvailable(fy, bar) {
+  const rows = DATA.ld.gen[fy];
+  return Object.values(rows).some((r) => r[bar] != null);
+}
+
+// 修正係數：附註 2（a 間距保護層、b 輕質、c/d 環氧，頂層與環氧合計上限 1.7）、7（成束）
+function factors(m) {
+  const top = m.top && state.pos === 'top';
+  const list = [];
+  if (state.mA) list.push(['不符合淨間距／保護層規定', 1.5]);
+  if (state.mLw) list.push(['輕質混凝土', 1.33]);
+  if (state.mEp === 'c') list.push([top ? '環氧（保護層<3db 或間距<6db），頂層' : '環氧（保護層<3db 或間距<6db）', top ? 1.31 : 1.5]);
+  if (state.mEp === 'd') list.push(['其他環氧塗佈', 1.2]);
+  if (state.bundle === 3) list.push(['三根成束', 1.2]);
+  if (state.bundle === 4) list.push(['四根成束', 1.33]);
+  return list;
+}
+const prod = (list) => list.reduce((a, [, f]) => a * f, 1);
+
+function chipGroup(el, items, cur, onPick, opts = {}) {
+  el.innerHTML = '';
+  items.forEach((it) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (opts.num ? ' num' : '');
+    b.innerHTML = it.html || it.label;
+    b.setAttribute('aria-pressed', String(it.value === cur));
+    if (it.disabled) { b.disabled = true; b.title = it.title || ''; }
+    b.addEventListener('click', () => onPick(it.value));
+    el.appendChild(b);
+  });
+}
+function save() { try { localStorage.setItem('hp5-lookup', JSON.stringify(state)); } catch (e) {} }
+
+function card(el, sym, name, valueHtml, notes) {
+  el.innerHTML = `<div class="k"><span class="sym">${sym}</span><span class="name">${name}</span></div>${valueHtml}${notes.filter(Boolean).join('')}`;
+}
+const valHtml = (v, unit = 'cm') => v == null ? '<div class="val na">本表未列</div>' : `<div class="val">${v}<span class="u">${unit}</span></div>`;
+const fcNote = (r) => r && r.fallback ? `<div class="flag">表列無 fc'=${state.fc}，保守採 fc'=${r.fc} 之表值</div>` : '';
+const susNote = (r) => r && r.sus ? `<div class="flag bad">⚠ 疑似圖面筆誤：${r.sus}</div>` : '';
+
+let copyText = '';
+
+function render() {
+  const m = MEMBERS.find((x) => x.id === state.member) || MEMBERS[0];
+  if (!m.top) state.pos = 'gen';
+  if (!barAvailable(state.fy, state.bar)) {
+    const cur = BARS.indexOf(state.bar);
+    const ok = BARS.filter((b) => barAvailable(state.fy, b));
+    state.bar = ok.reduce((a, b) => Math.abs(BARS.indexOf(b) - cur) < Math.abs(BARS.indexOf(a) - cur) ? b : a);
+  }
+  save();
+
+  chipGroup($('c-member'), MEMBERS.map((x) => ({ value: x.id, label: x.name })), state.member, (v) => { state.member = v; render(); });
+  $('row-pos').hidden = !m.top;
+  chipGroup($('c-pos'), [{ value: 'top', label: '頂層拉力筋' }, { value: 'gen', label: '一般拉力筋' }], state.pos, (v) => { state.pos = v; render(); });
+  chipGroup($('c-fy'), FYS.map((x) => ({ value: x, label: x })), state.fy, (v) => { state.fy = v; render(); }, { num: true });
+  chipGroup($('c-fc'), FCS.map((x) => ({ value: x, label: String(x) })), state.fc, (v) => { state.fc = v; render(); }, { num: true });
+  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${b}<small>${barNo(b)}</small>`, disabled: !barAvailable(state.fy, b), title: `fy=${state.fy} 本表未列` })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
+  const envSel = $('s-env');
+  if (!envSel.options.length) {
+    ENVS.forEach((e) => { const o = document.createElement('option'); o.value = e.id; o.textContent = e.name; envSel.appendChild(o); });
+    envSel.addEventListener('change', () => { state.env = envSel.value; render(); });
+  }
+  envSel.value = state.env;
+
+  const T = tables(m);
+  const posName = state.pos === 'top' ? '頂層拉力筋' : '一般拉力筋';
+  const ld = look(T.ld, state.fy, state.fc, state.bar);
+  const ls = state.bar === 'D39' ? null : look(T.ls, state.fy, state.fc, state.bar);
+  const fl = factors(m);
+  const f = prod(fl);
+  const ldAdj = ld ? Math.ceil(ld.v * f) : null;
+  let lsAdj = ls ? ls.v * f : null;
+  if (lsAdj != null && state.classA) lsAdj = Math.max(lsAdj / 1.3, 30);
+  if (lsAdj != null) lsAdj = Math.ceil(lsAdj);
+  const changedLd = ld && ldAdj !== ld.v;
+  const changedLs = ls && lsAdj !== ls.v;
+
+  $('sum').innerHTML = `<b>${m.name}</b>${m.top ? '・' + posName : ''}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${state.bar}</b>（${barNo(state.bar)}）${fl.length || state.classA ? '・<b>含修正</b>' : ''}`;
+
+  card($('card-ld'), 'ℓd', '受拉伸展長度', valHtml(ldAdj), [
+    changedLd ? `<div class="base">表值 ${ld.v} × ${f.toFixed(2)}，無條件進位</div>` : '',
+    `<div class="note">${T.ldName}</div>`, fcNote(ld), susNote(ld)]);
+
+  const lsMsg = state.bar === 'D39' ? '<div class="flag bad">D39（#12）不可搭接（附註 8）</div>' : '';
+  card($('card-ls'), 'ℓst', state.classA ? '受拉搭接長度（甲級）' : '受拉搭接長度（乙級）',
+    state.bar === 'D39' ? '<div class="val na">不可搭接</div>' : valHtml(lsAdj), [
+    changedLs ? `<div class="base">表值 ${ls.v}${f !== 1 ? ` × ${f.toFixed(2)}` : ''}${state.classA ? ' ÷ 1.3（≥30）' : ''}，無條件進位</div>` : '',
+    `<div class="note">${T.lsName}${m.id === 'col' ? '（柱專用表）' : ''}</div>`, lsMsg, fcNote(ls), susNote(ls)]);
+
+  // 保護層（mm）
+  const bi = BARS.indexOf(state.bar);
+  let cv, cvNote;
+  if (state.env === 'cast') { cv = 75; cvNote = '所有構材・所有鋼筋'; }
+  else if (state.env === 'sea') { cv = 100; cvNote = '所有構材・所有鋼筋'; }
+  else if (state.env === 'exp') { cv = bi >= BARS.indexOf('D19') ? 50 : 40; cvNote = `所有構材・${bi >= 3 ? 'D19 至 D57' : 'D16 及以下'}`; }
+  else if (m.cover === 'slab') { cv = 20; cvNote = '樓板、小梁和牆・D36 及以下（D43~D57 為 40）'; }
+  else { cv = 40; cvNote = '梁、柱、柱墩和拉力桿・主筋、肋筋、箍筋'; }
+  card($('card-cover'), 'c', '鋼筋最小保護層', `<div class="val">${cv}<span class="u">mm</span></div>`, [
+    `<div class="note">${cvNote}・${ENVS.find((e) => e.id === state.env).name}</div>`,
+    '<div class="note">有橫向鋼筋者量至箍筋表面；無者量至外層主筋表面</div>']);
+
+  const db = DATA.bars[state.bar].db / 10;
+  const sp = m.comp ? Math.max(4.0, 1.5 * db) : Math.max(2.5, db);
+  card($('card-spec'), state.bar, `${barNo(state.bar)}・d<sub>b</sub> ${DATA.bars[state.bar].db} mm`, `<div class="val">${sp.toFixed(1)}<span class="u">cm</span></div>`, [
+    `<div class="note">${m.comp ? '受壓構材（柱牆）最小淨距 ≥ max(4.0cm, 1.5d<sub>b</sub>)' : '撓曲構材（梁板）最小淨距 ≥ max(2.5cm, 1.0d<sub>b</sub>)'}</div>`,
+    '<div class="note">另須 ≥ 粗粒料粒徑 1.33 倍；束筋以 D′ 計</div>']);
+
+  renderMods(m, fl, f);
+  renderCompare(m, T, f);
+
+  const lines = [
+    `【HP5 錨錠搭接查表】${m.name}${m.top ? ' ' + posName : ''} fy=${state.fy} fc'=${state.fc} ${state.bar}(${barNo(state.bar)})`,
+    `ℓd 受拉伸展：${ld ? ldAdj + ' cm' + (changedLd ? `（表值 ${ld.v}）` : '') : '本表未列'}`,
+    `ℓst 受拉搭接（${state.classA ? '甲' : '乙'}級）：${ls ? lsAdj + ' cm' + (changedLs ? `（表值 ${ls.v}）` : '') : (state.bar === 'D39' ? 'D39 不可搭接' : '本表未列')}`,
+    `最小保護層：${cv} mm（${ENVS.find((e) => e.id === state.env).name}）`,
+  ];
+  if (fl.length) lines.push('修正：' + fl.map(([n, x]) => `${n}×${x}`).join('、'));
+  if ([ld, ls].some((r) => r && r.fallback)) lines.push(`※ fc'=${state.fc} 不在表列者，採較低一級 fc' 表值`);
+  if ([ld, ls].some((r) => r && r.sus)) lines.push('※ 含疑似圖面筆誤之數值，請與設計單位確認');
+  lines.push('依 HP5 S7A-2 結構施工標準圖（二）');
+  copyText = lines.join('\n');
+}
+
+function renderMods(m, fl, f) {
+  const top = m.top && state.pos === 'top';
+  const el = $('mods');
+  el.innerHTML = `
+    <fieldset><legend>伸展與搭接</legend>
+      <label><input type="checkbox" id="mA" ${state.mA ? 'checked' : ''}> 淨間距或淨保護層不符附註 1 規定 <span class="factor">×1.50</span></label>
+      <label><input type="checkbox" id="mLw" ${state.mLw ? 'checked' : ''}> 輕質混凝土 <span class="factor">×1.33</span></label>
+    </fieldset>
+    <fieldset><legend>環氧樹脂塗佈</legend>
+      <label><input type="radio" name="ep" value="none" ${state.mEp === 'none' ? 'checked' : ''}> 未塗佈</label>
+      <label><input type="radio" name="ep" value="c" ${state.mEp === 'c' ? 'checked' : ''}> 淨保護層 &lt; 3d<sub>b</sub> 或淨間距 &lt; 6d<sub>b</sub> <span class="factor">×${top ? '1.31（頂層）' : '1.50'}</span></label>
+      <label><input type="radio" name="ep" value="d" ${state.mEp === 'd' ? 'checked' : ''}> 其他情況 <span class="factor">×1.20</span></label>
+    </fieldset>
+    <fieldset><legend>成束鋼筋</legend>
+      <label><input type="radio" name="bd" value="1" ${state.bundle <= 2 ? 'checked' : ''}> 單根或兩根成束</label>
+      <label><input type="radio" name="bd" value="3" ${state.bundle === 3 ? 'checked' : ''}> 三根成束 <span class="factor">+20%</span></label>
+      <label><input type="radio" name="bd" value="4" ${state.bundle === 4 ? 'checked' : ''}> 四根成束 <span class="factor">+33%</span></label>
+    </fieldset>
+    <fieldset><legend>搭接等級</legend>
+      <label><input type="checkbox" id="classA" ${state.classA ? 'checked' : ''}> 符合規範 25.5.2.1 甲級搭接 <span class="factor">÷1.3，≥30cm</span></label>
+    </fieldset>
+    <div class="note">${fl.length ? `目前合計係數 <b class="factor">×${f.toFixed(3)}</b>：${fl.map(([n, x]) => `${n} ×${x}`).join('、')}` : '目前未套用修正係數'}</div>`;
+  $('mA').onchange = (e) => { state.mA = e.target.checked; render(); };
+  $('mLw').onchange = (e) => { state.mLw = e.target.checked; render(); };
+  $('classA').onchange = (e) => { state.classA = e.target.checked; render(); };
+  el.querySelectorAll('input[name="ep"]').forEach((r) => { r.onchange = () => { state.mEp = r.value; render(); }; });
+  el.querySelectorAll('input[name="bd"]').forEach((r) => { r.onchange = () => { state.bundle = Number(r.value); render(); }; });
+}
+
+function renderCompare(m, T, f) {
+  const pos = state.pos === 'top' ? '頂層' : '一般';
+  $('cmp-title').textContent = `同條件各號數比較（${m.name}${m.top ? '・' + pos : ''}・fy ${state.fy}・fc' ${state.fc}・表值未含修正）`;
+  const rows = BARS.map((b) => {
+    const ld = look(T.ld, state.fy, state.fc, b);
+    if (!ld) return '';
+    const ls = b === 'D39' ? null : look(T.ls, state.fy, state.fc, b);
+    const c = (r, none) => r ? `<td class="${r.sus ? 'sus' : ''}" title="${r.sus || ''}">${r.v}${r.fallback ? '*' : ''}${r.sus ? ' ⚠' : ''}</td>` : `<td>${none}</td>`;
+    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${b} <span style="opacity:.6">${barNo(b)}</span></td>${c(ld, '—')}${c(ls, b === 'D39' ? '不可搭接' : '—')}</tr>`;
+  }).join('');
+  $('cmp').innerHTML = `<thead><tr><th>號數</th><th>ℓd</th><th>ℓst</th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+$('btn-copy').addEventListener('click', () => {
+  const btn = $('btn-copy');
+  const done = (ok) => { btn.textContent = ok ? '已複製' : '請手動選取'; setTimeout(() => { btn.textContent = '複製結果'; }, 1600); };
+  try { navigator.clipboard.writeText(copyText).then(() => done(true), () => fallbackCopy(done)); }
+  catch (e) { fallbackCopy(done); }
+});
+function fallbackCopy(done) {
+  const ta = document.createElement('textarea');
+  ta.value = copyText; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove(); done(ok);
+}
+
+render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body></html>
