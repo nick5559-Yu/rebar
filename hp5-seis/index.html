@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="zh-Hant"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#5b3a6b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HP5 耐震">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<style>body{margin:0}[hidden]{display:none!important}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}</style>
+</head><body>
+<title>HP5 耐震錨定查表</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* 版面：頂部查詢種類＋條件面板、下方結果卡片；與 HP5 錨錠搭接查表同一套樣式 */
+:root {
+  --bg: #eef0ee;
+  --surface: #ffffff;
+  --ink: #1d2422;
+  --muted: #5f6b67;
+  --line: #d3d9d6;
+  --accent: #b2561d;
+  --accent-ink: #ffffff;
+  --accent-soft: #f6e7dc;
+  --steel: #2f4a55;
+  --steel-ink: #ffffff;
+  --chip: #e2e7e4;
+  --warn-bg: #fff4d6;
+  --warn-ink: #7a5300;
+  --font-body: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+  --font-num: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151a19; --surface: #1f2624; --ink: #e8ece9; --muted: #9aa7a2; --line: #34403c;
+    --accent: #e08a52; --accent-ink: #1a1210; --accent-soft: #3a2a20; --steel: #9cc0cc; --steel-ink: #10181b; --chip: #2b3532;
+    --warn-bg: #3a3018; --warn-ink: #f0cf7a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151a19; --surface: #1f2624; --ink: #e8ece9; --muted: #9aa7a2; --line: #34403c;
+  --accent: #e08a52; --accent-ink: #1a1210; --accent-soft: #3a2a20; --steel: #9cc0cc; --steel-ink: #10181b; --chip: #2b3532;
+  --warn-bg: #3a3018; --warn-ink: #f0cf7a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+header.top .wrap { padding-block: 14px 10px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+h1 { font-size: 20px; font-weight: 900; margin: 0; letter-spacing: .02em; text-wrap: balance; }
+.badge { font: 700 11px var(--font-body); letter-spacing: .08em; background: var(--warn-bg); color: var(--warn-ink); padding: 3px 8px; border-radius: 999px; }
+.src { font-size: 12px; color: var(--muted); }
+
+.modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding-block: 0 12px; }
+.mode { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 8px 10px; cursor: pointer; text-align: left; display: grid; gap: 2px; font: inherit; min-width: 0; }
+.mode b { font: 600 15px var(--font-num); }
+.mode span { font-size: 12px; color: var(--muted); }
+.mode[aria-pressed="true"] { background: var(--steel); border-color: var(--steel); color: var(--steel-ink); }
+.mode[aria-pressed="true"] span { color: var(--steel-ink); opacity: .85; }
+
+.panel { background: var(--surface); border-bottom: 1px solid var(--line); }
+.panel .wrap { padding-block: 10px 12px; display: grid; gap: 8px; }
+.row { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; }
+.row > .lbl { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .06em; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; padding-block: 2px; min-width: 0; }
+.chip {
+  flex: 0 0 auto; border: 1px solid transparent; background: var(--chip); color: var(--ink);
+  font: 500 14px/1 var(--font-body); padding: 9px 12px; border-radius: 8px; cursor: pointer; min-height: 38px;
+}
+.chip.num { font-family: var(--font-num); font-size: 13.5px; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.chip:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+.chip:focus-visible, .mode:focus-visible, select:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--steel); outline-offset: 2px; }
+.chip small { font-size: 11px; opacity: .8; margin-left: 3px; }
+select { font: 500 14px var(--font-body); padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-height: 38px; width: 100%; max-width: 220px; }
+
+main .wrap { padding-block: 16px 40px; display: grid; gap: 14px; }
+.summary { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 13px; color: var(--muted); }
+.summary b { color: var(--ink); }
+.copy { margin-left: auto; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 13px var(--font-body); padding: 7px 12px; border-radius: 8px; cursor: pointer; }
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.card .k { display: flex; align-items: baseline; gap: 8px; }
+.card .sym { font: 600 15px var(--font-num); color: var(--accent); }
+.card .name { font-size: 13px; color: var(--muted); font-weight: 500; }
+.val { font: 600 40px/1.05 var(--font-num); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.val .u { font: 500 15px var(--font-body); color: var(--muted); margin-left: 4px; }
+.val.na { font-size: 18px; font-family: var(--font-body); color: var(--muted); font-weight: 500; }
+.base { font: 500 13px var(--font-num); color: var(--muted); }
+.note { font-size: 12.5px; color: var(--muted); }
+.flag { font-size: 12.5px; background: var(--warn-bg); color: var(--warn-ink); padding: 6px 8px; border-radius: 6px; }
+.mods { display: grid; gap: 6px; }
+.mods label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; font-size: 13.5px; }
+.mods input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: var(--accent); flex: 0 0 auto; }
+.factor { font: 600 13px var(--font-num); color: var(--accent); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 14px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+h2 { font-size: 15px; margin: 6px 0 0; font-weight: 700; }
+.tblwrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+thead th { font-size: 12px; color: var(--muted); font-weight: 700; background: var(--bg); }
+td { font-family: var(--font-num); }
+tr.cur td { background: var(--accent-soft); font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 16px; }
+summary { cursor: pointer; font-weight: 700; font-size: 14px; }
+details ol { margin: 8px 0 4px; padding-left: 20px; font-size: 13.5px; display: grid; gap: 4px; }
+details h3 { font-size: 13px; margin: 10px 0 0; color: var(--muted); }
+footer { font-size: 12px; color: var(--muted); }
+@media (min-width: 760px) {
+  .row { grid-template-columns: 64px 1fr; }
+  .val { font-size: 46px; }
+}
+</style>
+
+<header class="top"><div class="wrap">
+  <h1>HP5 耐震錨定查表</h1>
+  <span class="src">依 HP5 S7A-3 結構施工標準圖（三）・單位 cm、kgf/cm²</span>
+</div></header>
+
+<section class="panel" aria-label="查詢條件"><div class="wrap">
+  <div class="modes" id="modes" role="group" aria-label="查詢種類"></div>
+  <div class="row" id="row-zone"><span class="lbl">區域</span><div class="chips" id="c-zone" role="group" aria-label="接頭區"></div></div>
+  <div class="row" id="row-kind"><span class="lbl">種類</span><div class="chips" id="c-kind" role="group" aria-label="鋼線種類"></div></div>
+  <div class="row" id="row-fy"><span class="lbl">fy</span><div class="chips" id="c-fy" role="group" aria-label="鋼筋降伏強度"></div></div>
+  <div class="row"><span class="lbl">fc'</span><div class="chips" id="c-fc" role="group" aria-label="混凝土強度"></div></div>
+  <div class="row" id="row-bar"><span class="lbl">號數</span><div class="chips" id="c-bar" role="group" aria-label="鋼筋號數"></div></div>
+  <div class="row" id="row-phi"><span class="lbl">線徑</span><div class="chips" id="c-phi" role="group" aria-label="鋼線線徑"></div></div>
+  <div class="row" id="row-bw"><span class="lbl">梁寬</span><select id="s-bw" aria-label="梁寬"></select></div>
+</div></section>
+
+<main><div class="wrap">
+  <div class="summary"><span id="sum"></span><button class="copy" id="btn-copy" type="button">複製結果</button></div>
+  <div class="grid" id="cards"></div>
+  <h2 id="cmp-title"></h2>
+  <div class="tblwrap"><table id="cmp"></table></div>
+
+  <details>
+    <summary>圖說附註</summary>
+    <h3>標準彎鉤 ℓdh</h3>
+    <ol>
+      <li>非耐震接頭區：垂直彎鉤平面之側向保護層 ≥ 6.5cm，且 90° 彎鉤直線延長段之保護層 ≥ 5cm。不符合者 ×1/0.7，輕質混凝土 ×1.3，鋼筋塗佈環氧樹脂 ×1.2。</li>
+      <li>耐震接頭區：適用於特殊抗彎矩構架之接頭，彎鉤應置於柱或邊界構件之圍束核心中，入接頭內 ≥ ℓdh 並延伸至圍束核心之遠端；輕質混凝土 ×1.33。</li>
+      <li>主筋彎曲內徑 D：6d<sub>b</sub>（D10~D25）、8d<sub>b</sub>（D29~D36）、10d<sub>b</sub>（D39 以上）；90° 直線段 12d<sub>b</sub>，180° 延伸 4d<sub>b</sub> ≥ 6.5cm。</li>
+      <li>箍筋或肋筋彎曲內徑 D：4d<sub>b</sub>（D10~D16）、6d<sub>b</sub>（D19~D25）；90° 直線段 6d<sub>b</sub>（D10~D16）、12d<sub>b</sub>（D19~D25），且 ≥ 7.5cm；135° 延伸 6d<sub>b</sub> ≥ 7.5cm；180° 延伸 4d<sub>b</sub> ≥ 6.5cm（耐震彎鉤為 6d<sub>b</sub> ≥ 7.5cm）。</li>
+    </ol>
+    <h3>擴頭鋼筋 ℓdt（耐震接頭區）</h3>
+    <ol>
+      <li>擴頭使用於受拉竹節鋼筋，應符合建築物混凝土結構設計規範 25.4.4 節。表值未計入擴頭厚度。</li>
+      <li>適用於擴頭鋼筋終止於具橫向圍束之耐震構架接頭核心或同柱塑鉸區；鋼筋間最小中心距允許降至 2.5d<sub>b</sub>，柱鋼筋最小淨保護層允許降至 1.5d<sub>b</sub>。擴頭鋼筋終止於接頭內時，應延伸至接頭核心區之另一面。</li>
+    </ol>
+    <h3>麻面鋼線與麻面銲接鋼線網（fy = 5100 kgf/cm²）</h3>
+    <ol>
+      <li>表列搭接之鋼筋等級修正因數 Ψg = 1.10。</li>
+      <li>待伸展鋼線網間距大於 10cm。</li>
+      <li>銲接麻面鋼線網在其伸展長度內需要一根橫交鋼線，且距離臨界斷面至少 5cm。</li>
+      <li>相鄰搭接：伸展 ℓd ≥ 20cm；搭接 1.3Ψg ℓd ≥ 20cm，橫交鋼線間距 ≥ 5cm。</li>
+    </ol>
+  </details>
+
+  <footer>表值由圖面 PDF 文字層直接抽取；「擴頭錨定時單排梁主筋支數上限」為圖形文字，依放大圖判讀。與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-27</footer>
+</div></main>
+
+<script>
+const DATA = {"source":"HP5 標準圖 S7A-3 結構施工標準圖（三）・張號 61/74・日期 114.01.06","hookExt":{"A1":{"D10":15.3,"D13":20.4,"D16":25.5,"D19":30.6,"D22":35.6,"D25":40.7,"D29":48.8,"D32":54.8,"D36":60.9,"D39":71.0},"A2":{"D19":15.0,"D22":17.5,"D25":20.0,"D29":25.8,"D32":29.0,"D36":32.2,"D39":39.4},"A3":{"D10":9.0,"D13":12.0,"D16":14.0},"A4":{"D10":10.5,"D13":12.0,"D16":14.5}},"ldhNon":{"2800":{"280":{"D10":15,"D13":15,"D16":15},"315":{"D10":15,"D13":15,"D16":15},"350":{"D10":15,"D13":15,"D16":15},"385":{"D10":15,"D13":15,"D16":15},"420":{"D10":15,"D13":15,"D16":15},"490":{"D10":15,"D13":15,"D16":15},"560":{"D10":15,"D13":15,"D16":15}},"4200":{"280":{"D10":15,"D13":17,"D16":21,"D19":26,"D22":30,"D25":34,"D29":38,"D32":43,"D36":48},"315":{"D10":15,"D13":16,"D16":20,"D19":25,"D22":29,"D25":32,"D29":36,"D32":41,"D36":46},"350":{"D10":15,"D13":15,"D16":19,"D19":23,"D22":27,"D25":30,"D29":34,"D32":38,"D36":43},"385":{"D10":15,"D13":15,"D16":19,"D19":22,"D22":26,"D25":29,"D29":34,"D32":38,"D36":43},"420":{"D10":15,"D13":15,"D16":18,"D19":21,"D22":24,"D25":28,"D29":31,"D32":35,"D36":43},"490":{"D10":15,"D13":15,"D16":16,"D19":20,"D22":23,"D25":26,"D29":29,"D32":35,"D36":43},"560":{"D10":15,"D13":15,"D16":15,"D19":18,"D22":21,"D25":24,"D29":29,"D32":35,"D36":43}},"5000":{"280":{"D10":15,"D13":20,"D16":25,"D19":30,"D22":35,"D25":40,"D29":46,"D32":51,"D36":57},"350":{"D10":15,"D13":18,"D16":23,"D19":27,"D22":32,"D25":36,"D29":41,"D32":46,"D36":51},"420":{"D10":15,"D13":17,"D16":21,"D19":25,"D22":29,"D25":33,"D29":37,"D32":42,"D36":51},"490":{"D10":15,"D13":16,"D16":19,"D19":23,"D22":27,"D25":31,"D29":35,"D32":42,"D36":51},"560":{"D10":15,"D13":15,"D16":18,"D19":22,"D22":25,"D25":29,"D29":35,"D32":42,"D36":51}},"5600":{"280":{"D10":17,"D13":23,"D16":28,"D19":34,"D22":40,"D25":45,"D29":51,"D32":57,"D36":63},"350":{"D10":15,"D13":20,"D16":25,"D19":31,"D22":35,"D25":40,"D29":46,"D32":51,"D36":57},"420":{"D10":15,"D13":19,"D16":23,"D19":28,"D22":32,"D25":37,"D29":42,"D32":47,"D36":57},"490":{"D10":15,"D13":17,"D16":22,"D19":26,"D22":30,"D25":34,"D29":39,"D32":47,"D36":57},"560":{"D10":15,"D13":16,"D16":20,"D19":24,"D22":28,"D25":32,"D29":39,"D32":47,"D36":57}}},"ldhSeis":{"2800":{"280":{"D10":15,"D13":15,"D16":16},"315":{"D10":15,"D13":15,"D16":15},"350":{"D10":15,"D13":15,"D16":15},"385":{"D10":15,"D13":15,"D16":15},"420":{"D10":15,"D13":15,"D16":15},"490":{"D10":15,"D13":15,"D16":15},"560":{"D10":15,"D13":15,"D16":15}},"4200":{"280":{"D10":15,"D13":20,"D16":24,"D19":29,"D22":34,"D25":39,"D29":44,"D32":49,"D36":55},"315":{"D10":15,"D13":19,"D16":23,"D19":28,"D22":32,"D25":37,"D29":42,"D32":47,"D36":52},"350":{"D10":15,"D13":18,"D16":22,"D19":26,"D22":30,"D25":35,"D29":39,"D32":44,"D36":49},"385":{"D10":15,"D13":17,"D16":21,"D19":25,"D22":29,"D25":34,"D29":38,"D32":42,"D36":47},"420":{"D10":15,"D13":16,"D16":20,"D19":24,"D22":28,"D25":32,"D29":36,"D32":40,"D36":45},"490":{"D10":15,"D13":15,"D16":19,"D19":22,"D22":26,"D25":29,"D29":33,"D32":37,"D36":43},"560":{"D10":15,"D13":15,"D16":17,"D19":21,"D22":24,"D25":28,"D29":31,"D32":35,"D36":43}},"5000":{"280":{"D10":18,"D13":23,"D16":29,"D19":35,"D22":40,"D25":46,"D29":52,"D32":58,"D36":65},"350":{"D10":16,"D13":21,"D16":26,"D19":31,"D22":36,"D25":41,"D29":47,"D32":52,"D36":58},"420":{"D10":15,"D13":19,"D16":24,"D19":28,"D22":33,"D25":38,"D29":43,"D32":48,"D36":53},"490":{"D10":15,"D13":18,"D16":22,"D19":26,"D22":31,"D25":35,"D29":39,"D32":44,"D36":51},"560":{"D10":15,"D13":17,"D16":21,"D19":25,"D22":29,"D25":33,"D29":37,"D32":42,"D36":51}},"5600":{"280":{"D10":20,"D13":26,"D16":32,"D19":39,"D22":45,"D25":52,"D29":58,"D32":65,"D36":72},"350":{"D10":18,"D13":23,"D16":29,"D19":35,"D22":40,"D25":46,"D29":52,"D32":58,"D36":65},"420":{"D10":16,"D13":21,"D16":27,"D19":32,"D22":37,"D25":42,"D29":48,"D32":53,"D36":59},"490":{"D10":15,"D13":20,"D16":25,"D19":29,"D22":34,"D25":39,"D29":44,"D32":49,"D36":57},"560":{"D10":15,"D13":19,"D16":23,"D19":28,"D22":32,"D25":37,"D29":41,"D32":47,"D36":57}}},"ldtSeis":{"4200":{"280":{"D10":15,"D13":20,"D16":24,"D19":29,"D22":34,"D25":39,"D29":44,"D32":49,"D36":55},"350":{"D10":15,"D13":18,"D16":22,"D19":26,"D22":30,"D25":35,"D29":39,"D32":44,"D36":49},"420":{"D10":15,"D13":16,"D16":20,"D19":24,"D22":28,"D25":32,"D29":36,"D32":40,"D36":45},"490":{"D10":15,"D13":15,"D16":19,"D19":22,"D22":26,"D25":29,"D29":33,"D32":37,"D36":41},"560":{"D10":15,"D13":15,"D16":17,"D19":21,"D22":24,"D25":28,"D29":31,"D32":35,"D36":39}},"5000":{"280":{"D10":18,"D13":23,"D16":29,"D19":35,"D22":40,"D25":46,"D29":52,"D32":58,"D36":65},"350":{"D10":16,"D13":21,"D16":26,"D19":31,"D22":36,"D25":41,"D29":47,"D32":52,"D36":58},"420":{"D10":15,"D13":19,"D16":24,"D19":28,"D22":33,"D25":38,"D29":43,"D32":48,"D36":53},"490":{"D10":15,"D13":18,"D16":22,"D19":26,"D22":31,"D25":35,"D29":39,"D32":44,"D36":49},"560":{"D10":15,"D13":17,"D16":21,"D19":25,"D22":29,"D25":33,"D29":37,"D32":41,"D36":46}},"5600":{"280":{"D10":20,"D13":26,"D16":32,"D19":39,"D22":45,"D25":52,"D29":58,"D32":65,"D36":72},"350":{"D10":18,"D13":23,"D16":29,"D19":35,"D22":40,"D25":46,"D29":52,"D32":58,"D36":65},"420":{"D10":16,"D13":21,"D16":27,"D19":32,"D22":37,"D25":42,"D29":48,"D32":53,"D36":59},"490":{"D10":15,"D13":20,"D16":25,"D19":29,"D22":34,"D25":39,"D29":44,"D32":49,"D36":55},"560":{"D10":15,"D13":19,"D16":23,"D19":28,"D22":32,"D25":37,"D29":41,"D32":46,"D36":51}}},"wire":{"wire_ld":{"210":{"φ6":32,"φ7":38,"φ8":43,"φ9":48,"φ10":54,"φ11":59,"φ12":64,"φ13":70,"φ14":75,"φ15":80,"φ16":86},"245":{"φ6":30,"φ7":35,"φ8":40,"φ9":45,"φ10":50,"φ11":55,"φ12":60,"φ13":65,"φ14":70,"φ15":75,"φ16":79},"280":{"φ6":30,"φ7":33,"φ8":37,"φ9":42,"φ10":47,"φ11":51,"φ12":56,"φ13":61,"φ14":65,"φ15":70,"φ16":74},"350":{"φ6":30,"φ7":30,"φ8":34,"φ9":38,"φ10":42,"φ11":46,"φ12":50,"φ13":54,"φ14":58,"φ15":62,"φ16":67},"420":{"φ6":30,"φ7":30,"φ8":31,"φ9":34,"φ10":38,"φ11":42,"φ12":46,"φ13":50,"φ14":53,"φ15":57,"φ16":61},"490":{"φ6":30,"φ7":30,"φ8":30,"φ9":32,"φ10":35,"φ11":39,"φ12":42,"φ13":46,"φ14":49,"φ15":53,"φ16":56},"560":{"φ6":30,"φ7":30,"φ8":30,"φ9":30,"φ10":33,"φ11":36,"φ12":40,"φ13":43,"φ14":46,"φ15":49,"φ16":53}},"wire_ls":{"210":{"φ6":46,"φ7":54,"φ8":62,"φ9":69,"φ10":77,"φ11":84,"φ12":92,"φ13":100,"φ14":107,"φ15":115,"φ16":123},"245":{"φ6":43,"φ7":50,"φ8":57,"φ9":64,"φ10":71,"φ11":78,"φ12":85,"φ13":92,"φ14":99,"φ15":106,"φ16":113},"280":{"φ6":40,"φ7":47,"φ8":53,"φ9":60,"φ10":67,"φ11":73,"φ12":80,"φ13":86,"φ14":93,"φ15":100,"φ16":106},"350":{"φ6":36,"φ7":42,"φ8":48,"φ9":54,"φ10":60,"φ11":65,"φ12":71,"φ13":77,"φ14":83,"φ15":89,"φ16":95},"420":{"φ6":33,"φ7":38,"φ8":44,"φ9":49,"φ10":54,"φ11":60,"φ12":65,"φ13":71,"φ14":76,"φ15":81,"φ16":87},"490":{"φ6":30,"φ7":35,"φ8":40,"φ9":45,"φ10":50,"φ11":55,"φ12":60,"φ13":65,"φ14":70,"φ15":75,"φ16":80},"560":{"φ6":30,"φ7":33,"φ8":38,"φ9":43,"φ10":47,"φ11":52,"φ12":57,"φ13":61,"φ14":66,"φ15":71,"φ16":75}},"mesh_ld":{"210":{"φ6":20,"φ7":20,"φ8":23,"φ9":25,"φ10":28,"φ11":33,"φ12":39,"φ13":46,"φ14":53,"φ15":60,"φ16":69},"245":{"φ6":20,"φ7":20,"φ8":21,"φ9":23,"φ10":26,"φ11":30,"φ12":36,"φ13":42,"φ14":49,"φ15":56,"φ16":64},"280":{"φ6":20,"φ7":20,"φ8":20,"φ9":22,"φ10":24,"φ11":28,"φ12":34,"φ13":40,"φ14":46,"φ15":52,"φ16":60},"350":{"φ6":20,"φ7":20,"φ8":20,"φ9":20,"φ10":22,"φ11":25,"φ12":30,"φ13":35,"φ14":41,"φ15":47,"φ16":53},"420":{"φ6":20,"φ7":20,"φ8":20,"φ9":20,"φ10":20,"φ11":23,"φ12":28,"φ13":32,"φ14":37,"φ15":43,"φ16":49},"490":{"φ6":20,"φ7":20,"φ8":20,"φ9":20,"φ10":20,"φ11":22,"φ12":26,"φ13":30,"φ14":35,"φ15":40,"φ16":45},"560":{"φ6":20,"φ7":20,"φ8":20,"φ9":20,"φ10":20,"φ11":20,"φ12":24,"φ13":28,"φ14":33,"φ15":37,"φ16":42}},"mesh_ls":{"210":{"φ6":24,"φ7":28,"φ8":32,"φ9":36,"φ10":40,"φ11":47,"φ12":55,"φ13":65,"φ14":75,"φ15":86,"φ16":98},"245":{"φ6":22,"φ7":26,"φ8":30,"φ9":33,"φ10":37,"φ11":43,"φ12":51,"φ13":60,"φ14":70,"φ15":80,"φ16":91},"280":{"φ6":21,"φ7":24,"φ8":28,"φ9":31,"φ10":35,"φ11":40,"φ12":48,"φ13":56,"φ14":65,"φ15":75,"φ16":85},"350":{"φ6":20,"φ7":22,"φ8":25,"φ9":28,"φ10":31,"φ11":36,"φ12":43,"φ13":50,"φ14":58,"φ15":67,"φ16":76},"420":{"φ6":20,"φ7":20,"φ8":23,"φ9":26,"φ10":28,"φ11":33,"φ12":39,"φ13":46,"φ14":53,"φ15":61,"φ16":70},"490":{"φ6":20,"φ7":20,"φ8":21,"φ9":24,"φ10":26,"φ11":31,"φ12":36,"φ13":43,"φ14":49,"φ15":57,"φ16":64},"560":{"φ6":20,"φ7":20,"φ8":20,"φ9":22,"φ10":25,"φ11":29,"φ12":34,"φ13":40,"φ14":46,"φ15":53,"φ16":60}}},"headCount":{"cols":["D25","D32","D36"],"rows":[[25,2,2,2],[30,3,3,2],[35,4,3,3],[40,5,4,3],[45,6,4,4],[50,6,5,5],[55,7,6,5],[60,8,6,6],[65,9,7,6],[70,9,8,7],[75,10,8,7],[80,11,9,8],[85,12,9,8],[90,13,10,9],[95,13,11,10],[100,14,11,10],[105,15,12,11],[110,16,13,11],[115,17,13,12],[120,17,14,12]]}};
+
+const MODES = [
+  { id: 'hook', sym: 'ℓdh', name: '標準彎鉤' },
+  { id: 'head', sym: 'ℓdt', name: '擴頭鋼筋' },
+  { id: 'wire', sym: 'ℓd・ℓst', name: '麻面鋼線網' },
+];
+const BARS = ['D10','D13','D16','D19','D22','D25','D29','D32','D36','D39'];
+const BAR_NO = { D10:'#3', D13:'#4', D16:'#5', D19:'#6', D22:'#7', D25:'#8', D29:'#9', D32:'#10', D36:'#11', D39:'#12' };
+const DB = { D10:9.53, D13:12.7, D16:15.9, D19:19.1, D22:22.2, D25:25.4, D29:28.7, D32:32.2, D36:35.8, D39:38.7 };
+const FC_BAR = [280,315,350,385,420,490,560];
+const FC_WIRE = [210,245,280,350,420,490,560];
+const PHIS = Object.keys(DATA.wire.wire_ld['210']);
+const COUNT_COL = { D25: 1, D32: 2, D36: 3 };
+
+const state = { mode: 'hook', zone: 'seis', kind: 'wire', fy: '4200', fc: 280, wfc: 280, bar: 'D25', phi: 'φ8', bw: 50,
+  hA: false, hLw: false, hEp: false, sLw: false };
+try {
+  const saved = JSON.parse(localStorage.getItem('hp5-seis') || 'null');
+  if (saved && typeof saved === 'object') Object.assign(state, saved);
+} catch (e) {}
+const $ = (id) => document.getElementById(id);
+const save = () => { try { localStorage.setItem('hp5-seis', JSON.stringify(state)); } catch (e) {} };
+
+// 依 fc' 取值；表中沒有該 fc' 時取較低一級（較長、保守）
+function pick(rows, fc, col) {
+  if (!rows) return null;
+  const list = Object.keys(rows).map(Number).sort((a, b) => a - b);
+  let use = fc, fallback = false;
+  if (!list.includes(fc)) {
+    const lower = list.filter((x) => x < fc);
+    use = lower.length ? lower[lower.length - 1] : list[0];
+    fallback = true;
+  }
+  const v = rows[String(use)][col];
+  return v == null ? null : { v, fc: use, fallback };
+}
+const ldh = (zone, fy, fc, bar) => pick((zone === 'seis' ? DATA.ldhSeis : DATA.ldhNon)[fy], fc, bar);
+const ldt = (fy, fc, bar) => pick(DATA.ldtSeis[fy], fc, bar);
+
+function chipGroup(el, items, cur, onPick, opts = {}) {
+  el.innerHTML = '';
+  items.forEach((it) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip' + (opts.num ? ' num' : '');
+    b.innerHTML = it.html || it.label;
+    b.setAttribute('aria-pressed', String(it.value === cur));
+    if (it.disabled) { b.disabled = true; b.title = it.title || ''; }
+    b.addEventListener('click', () => onPick(it.value));
+    el.appendChild(b);
+  });
+}
+const card = (sym, name, valueHtml, notes = []) =>
+  `<div class="card"><div class="k"><span class="sym">${sym}</span><span class="name">${name}</span></div>${valueHtml}${notes.filter(Boolean).join('')}</div>`;
+const valHtml = (v, unit = 'cm') => v == null ? '<div class="val na">本表未列</div>' : `<div class="val">${v}<span class="u">${unit}</span></div>`;
+const fcNote = (r, fc) => r && r.fallback ? `<div class="flag">表列無 fc'=${fc}，保守採 fc'=${r.fc} 之表值</div>` : '';
+
+let copyText = '';
+
+function render() {
+  const mode = state.mode;
+  // 各模式可選的 fy、號數
+  const fys = mode === 'head' ? ['4200','5000','5600'] : ['2800','4200','5000','5600'];
+  if (mode !== 'wire' && !fys.includes(state.fy)) state.fy = '4200';
+  // 彎鉤模式：ℓdh 有列或彎鉤延伸有列即可選（D39 只有延伸 A1、A2）
+  const barOk = (b) => mode === 'hook' ? (DATA.ldhNon[state.fy]['280'][b] != null || (state.fy !== '2800' && DATA.hookExt.A1[b] != null))
+    : mode === 'head' ? DATA.ldtSeis[state.fy]['280'][b] != null : true;
+  if (mode !== 'wire' && !barOk(state.bar)) {
+    const cur = BARS.indexOf(state.bar);
+    const ok = BARS.filter(barOk);
+    state.bar = ok.reduce((a, b) => Math.abs(BARS.indexOf(b) - cur) < Math.abs(BARS.indexOf(a) - cur) ? b : a);
+  }
+  save();
+
+  $('modes').innerHTML = MODES.map((m) => `<button type="button" class="mode" data-m="${m.id}" aria-pressed="${m.id === mode}"><b>${m.sym}</b><span>${m.name}</span></button>`).join('');
+  $('modes').querySelectorAll('.mode').forEach((b) => { b.onclick = () => { state.mode = b.dataset.m; render(); }; });
+
+  $('row-zone').hidden = mode !== 'hook';
+  $('row-kind').hidden = mode !== 'wire';
+  $('row-fy').hidden = mode === 'wire';
+  $('row-bar').hidden = mode === 'wire';
+  $('row-phi').hidden = mode !== 'wire';
+  $('row-bw').hidden = mode !== 'head';
+
+  chipGroup($('c-zone'), [{ value: 'seis', label: '耐震接頭區' }, { value: 'non', label: '非耐震接頭區' }], state.zone, (v) => { state.zone = v; render(); });
+  chipGroup($('c-kind'), [{ value: 'wire', label: '麻面鋼線' }, { value: 'mesh', label: '麻面銲接鋼線網' }], state.kind, (v) => { state.kind = v; render(); });
+  chipGroup($('c-fy'), fys.map((x) => ({ value: x, label: x })), state.fy, (v) => { state.fy = v; render(); }, { num: true });
+  if (mode === 'wire') chipGroup($('c-fc'), FC_WIRE.map((x) => ({ value: x, label: String(x) })), state.wfc, (v) => { state.wfc = v; render(); }, { num: true });
+  else chipGroup($('c-fc'), FC_BAR.map((x) => ({ value: x, label: String(x) })), state.fc, (v) => { state.fc = v; render(); }, { num: true });
+  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${b}<small>${BAR_NO[b]}</small>`, disabled: !barOk(b), title: '本表未列' })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
+  chipGroup($('c-phi'), PHIS.map((p) => ({ value: p, label: p })), state.phi, (v) => { state.phi = v; render(); }, { num: true });
+  const bw = $('s-bw');
+  if (!bw.options.length) {
+    DATA.headCount.rows.forEach((r) => { const o = document.createElement('option'); o.value = r[0]; o.textContent = `${r[0]} cm`; bw.appendChild(o); });
+    bw.addEventListener('change', () => { state.bw = Number(bw.value); render(); });
+  }
+  bw.value = String(state.bw);
+
+  if (mode === 'hook') renderHook();
+  else if (mode === 'head') renderHead();
+  else renderWire();
+}
+
+function renderHook() {
+  const r = ldh(state.zone, state.fy, state.fc, state.bar);
+  const seis = state.zone === 'seis';
+  const fl = [];
+  if (!seis && state.hA) fl.push(['不符合保護層條件', 1 / 0.7]);
+  if (!seis && state.hLw) fl.push(['輕質混凝土', 1.3]);
+  if (!seis && state.hEp) fl.push(['塗佈環氧樹脂', 1.2]);
+  if (seis && state.sLw) fl.push(['輕質混凝土', 1.33]);
+  const f = fl.reduce((a, [, x]) => a * x, 1);
+  const adj = r ? Math.ceil(r.v * f) : null;
+  const db = DB[state.bar] / 10;
+  const bi = BARS.indexOf(state.bar);
+  const Dm = bi <= 5 ? 6 : bi <= 8 ? 8 : 10;
+  const ext = DATA.hookExt;
+  const zoneName = seis ? '耐震接頭區' : '非耐震接頭區';
+
+  const mods = seis
+    ? `<label><input type="checkbox" id="sLw" ${state.sLw ? 'checked' : ''}> 輕質混凝土 <span class="factor">×1.33</span></label>`
+    : `<label><input type="checkbox" id="hA" ${state.hA ? 'checked' : ''}> 側向保護層 &lt; 6.5cm 或 90° 延長段保護層 &lt; 5cm <span class="factor">×1/0.7</span></label>
+       <label><input type="checkbox" id="hLw" ${state.hLw ? 'checked' : ''}> 輕質混凝土 <span class="factor">×1.3</span></label>
+       <label><input type="checkbox" id="hEp" ${state.hEp ? 'checked' : ''}> 鋼筋塗佈環氧樹脂 <span class="factor">×1.2</span></label>`;
+
+  $('cards').innerHTML =
+    card('ℓdh', `具標準彎鉤受拉伸展長度・${zoneName}`, valHtml(adj), [
+      r && f !== 1 ? `<div class="base">表值 ${r.v} × ${f.toFixed(2)}，無條件進位</div>` : '',
+      `<div class="note">${seis ? '特殊抗彎矩構架接頭；彎鉤置於圍束核心並延伸至遠端' : '側向保護層 ≥ 6.5cm、90° 延長段保護層 ≥ 5cm 時之表值'}</div>`,
+      fcNote(r, state.fc), `<div class="mods">${mods}</div>`]) +
+    card('A1', '主筋 90° 標準彎鉤延伸', valHtml(ext.A1[state.bar]), [
+      `<div class="note">直線段 12d<sub>b</sub> = ${(12 * db).toFixed(1)} cm・彎曲內徑 D = ${Dm}d<sub>b</sub> = ${(Dm * db).toFixed(1)} cm</div>`]) +
+    card('A2', '主筋 180° 標準彎鉤延伸', valHtml(ext.A2[state.bar]), [
+      ext.A2[state.bar] == null ? '<div class="note">圖面僅列 D19 以上</div>' : '',
+      `<div class="note">延伸 4d<sub>b</sub> ≥ 6.5 → ${Math.max(4 * db, 6.5).toFixed(1)} cm</div>`]) +
+    (ext.A3[state.bar] != null
+      ? card('A3・A4', '箍筋或肋筋彎鉤延伸', `<dl class="kv"><dt>90° A3</dt><dd>${ext.A3[state.bar]} cm</dd><dt>135° A4</dt><dd>${ext.A4[state.bar]} cm</dd></dl>`, [
+          `<div class="note">彎曲內徑 D = 4d<sub>b</sub> = ${(4 * db).toFixed(1)} cm；135° 延伸 6d<sub>b</sub> ≥ 7.5 → ${Math.max(6 * db, 7.5).toFixed(1)} cm</div>`])
+      : card('A3・A4', '箍筋或肋筋彎鉤延伸', '<div class="val na">本表未列</div>', ['<div class="note">圖面僅列 D10~D16</div>']));
+
+  [['hA', 'hA'], ['hLw', 'hLw'], ['hEp', 'hEp'], ['sLw', 'sLw']].forEach(([id, k]) => { const el = $(id); if (el) el.onchange = () => { state[k] = el.checked; render(); }; });
+
+  $('sum').innerHTML = `<b>標準彎鉤</b>・${zoneName}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${state.bar}</b>（${BAR_NO[state.bar]}）${fl.length ? '・<b>含修正</b>' : ''}`;
+  $('cmp-title').textContent = `同條件各號數比較（fy ${state.fy}・fc' ${state.fc}・表值未含修正）`;
+  const rows = BARS.map((b) => {
+    const n = ldh('non', state.fy, state.fc, b), s = ldh('seis', state.fy, state.fc, b);
+    if (!n && !s && ext.A1[b] == null) return '';
+    const c = (x) => x ? `${x.v}${x.fallback ? '*' : ''}` : '—';
+    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${b} <span style="opacity:.6">${BAR_NO[b]}</span></td><td>${c(s)}</td><td>${c(n)}</td><td>${ext.A1[b] ?? '—'}</td><td>${ext.A2[b] ?? '—'}</td></tr>`;
+  }).join('');
+  $('cmp').innerHTML = `<thead><tr><th>號數</th><th>ℓdh 耐震</th><th>ℓdh 非耐震</th><th>A1</th><th>A2</th></tr></thead><tbody>${rows}</tbody>`;
+
+  copyText = [
+    `【HP5 耐震錨定查表】標準彎鉤 ${zoneName} fy=${state.fy} fc'=${state.fc} ${state.bar}(${BAR_NO[state.bar]})`,
+    `ℓdh：${r ? adj + ' cm' + (f !== 1 ? `（表值 ${r.v}，${fl.map(([n, x]) => `${n}×${x.toFixed(2)}`).join('、')}）` : '') : '本表未列'}`,
+    `主筋延伸 A1：${ext.A1[state.bar] ?? '—'} cm，A2：${ext.A2[state.bar] ?? '—'} cm`,
+    r && r.fallback ? `※ fc'=${state.fc} 不在表列，採 fc'=${r.fc} 表值` : '',
+    '依 HP5 S7A-3 結構施工標準圖（三）',
+  ].filter(Boolean).join('\n');
+}
+
+function renderHead() {
+  const r = ldt(state.fy, state.fc, state.bar);
+  const db = DB[state.bar] / 10;
+  const crow = DATA.headCount.rows.find((x) => x[0] === state.bw);
+  const ci = COUNT_COL[state.bar];
+  const cnt = ci ? crow[ci] : null;
+  $('cards').innerHTML =
+    card('ℓdt', '擴頭鋼筋受拉伸展長度・耐震接頭區', valHtml(r ? r.v : null), [
+      '<div class="note">未計入擴頭厚度；擴頭應延伸至接頭核心區之另一面</div>', fcNote(r, state.fc)]) +
+    card('s', '擴頭鋼筋最小中心距', `<div class="val">${(2.5 * db).toFixed(1)}<span class="u">cm</span></div>`, [
+      `<div class="note">允許降至 2.5d<sub>b</sub>；柱鋼筋最小淨保護層允許降至 1.5d<sub>b</sub> = ${(1.5 * db).toFixed(1)} cm</div>`]) +
+    card('n', `單排梁主筋支數上限・梁寬 ${state.bw} cm`, cnt == null ? '<div class="val na">本表未列</div>' : `<div class="val">${cnt}<span class="u">支</span></div>`, [
+      cnt == null ? '<div class="note">此表僅列 #8、#10、#11（D25、D32、D36）</div>' : `<div class="note">擴頭錨定時，${state.bar}（${BAR_NO[state.bar]}）單排上限</div>`]);
+
+  $('sum').innerHTML = `<b>擴頭鋼筋</b>・耐震接頭區・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${state.bar}</b>（${BAR_NO[state.bar]}）・梁寬 <b>${state.bw}</b> cm`;
+  $('cmp-title').textContent = `同條件各號數比較（fy ${state.fy}・fc' ${state.fc}・梁寬 ${state.bw} cm）`;
+  const rows = BARS.map((b) => {
+    const x = ldt(state.fy, state.fc, b);
+    if (!x) return '';
+    const ci2 = COUNT_COL[b];
+    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${b} <span style="opacity:.6">${BAR_NO[b]}</span></td><td>${x.v}${x.fallback ? '*' : ''}</td><td>${(2.5 * DB[b] / 10).toFixed(1)}</td><td>${ci2 ? crow[ci2] : '—'}</td></tr>`;
+  }).join('');
+  $('cmp').innerHTML = `<thead><tr><th>號數</th><th>ℓdt</th><th>最小中心距</th><th>單排支數</th></tr></thead><tbody>${rows}</tbody>`;
+
+  copyText = [
+    `【HP5 耐震錨定查表】擴頭鋼筋 耐震接頭區 fy=${state.fy} fc'=${state.fc} ${state.bar}(${BAR_NO[state.bar]})`,
+    `ℓdt：${r ? r.v + ' cm（未計入擴頭厚度）' : '本表未列'}`,
+    `最小中心距：${(2.5 * db).toFixed(1)} cm（2.5db）`,
+    cnt != null ? `梁寬 ${state.bw} cm 單排上限：${cnt} 支` : '',
+    r && r.fallback ? `※ fc'=${state.fc} 不在表列，採 fc'=${r.fc} 表值` : '',
+    '依 HP5 S7A-3 結構施工標準圖（三）',
+  ].filter(Boolean).join('\n');
+}
+
+function renderWire() {
+  const k = state.kind;
+  const ld = pick(DATA.wire[k + '_ld'], state.wfc, state.phi);
+  const ls = pick(DATA.wire[k + '_ls'], state.wfc, state.phi);
+  const kindName = k === 'wire' ? '麻面鋼線' : '麻面銲接鋼線網';
+  $('cards').innerHTML =
+    card('ℓd', `${kindName}・伸展長度`, valHtml(ld ? ld.v : null), [
+      `<div class="note">fy = 5100 kgf/cm²；待伸展鋼線網間距大於 10cm${k === 'mesh' ? '；伸展長度內需一根橫交鋼線，距臨界斷面 ≥ 5cm' : ''}</div>`, fcNote(ld, state.wfc)]) +
+    card('ℓst', `${kindName}・搭接長度`, valHtml(ls ? ls.v : null), [
+      '<div class="note">已含鋼筋等級修正因數 Ψg = 1.10</div>', fcNote(ls, state.wfc)]);
+
+  $('sum').innerHTML = `<b>${kindName}</b>・fc' <b>${state.wfc}</b>・<b>${state.phi}</b>（mm）`;
+  $('cmp-title').textContent = `同條件各線徑比較（${kindName}・fc' ${state.wfc}）`;
+  const rows = PHIS.map((p) => {
+    const a = pick(DATA.wire[k + '_ld'], state.wfc, p), b = pick(DATA.wire[k + '_ls'], state.wfc, p);
+    return `<tr class="${p === state.phi ? 'cur' : ''}"><td>${p}</td><td>${a.v}</td><td>${b.v}</td></tr>`;
+  }).join('');
+  $('cmp').innerHTML = `<thead><tr><th>線徑</th><th>ℓd</th><th>ℓst</th></tr></thead><tbody>${rows}</tbody>`;
+
+  copyText = [
+    `【HP5 耐震錨定查表】${kindName} fc'=${state.wfc} ${state.phi}`,
+    `ℓd 伸展：${ld ? ld.v + ' cm' : '本表未列'}`,
+    `ℓst 搭接：${ls ? ls.v + ' cm（含 Ψg=1.10）' : '本表未列'}`,
+    '依 HP5 S7A-3 結構施工標準圖（三）',
+  ].join('\n');
+}
+
+$('btn-copy').addEventListener('click', () => {
+  const btn = $('btn-copy');
+  const done = (ok) => { btn.textContent = ok ? '已複製' : '請手動選取'; setTimeout(() => { btn.textContent = '複製結果'; }, 1600); };
+  try { navigator.clipboard.writeText(copyText).then(() => done(true), () => fallbackCopy(done)); }
+  catch (e) { fallbackCopy(done); }
+});
+function fallbackCopy(done) {
+  const ta = document.createElement('textarea');
+  ta.value = copyText; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) {}
+  ta.remove(); done(ok);
+}
+
+render();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
+}
+</script>
+</body></html>
