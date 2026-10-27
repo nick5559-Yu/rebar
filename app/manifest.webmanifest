@@ -3,6 +3,7 @@
   "short_name": "鋼筋查表",
   "description": "依 S7-02 結構施工標準圖查詢 Ld、Ls、Ldh、Ldt、保護層與標準彎鉤尺寸",
   "lang": "zh-Hant",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
