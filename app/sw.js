@@ -1,8 +1,10 @@
 // 鋼筋錨錠查表：離線快取
 // 第一次開啟時把整個 App 存到手機，之後沒有網路也能開；有網路時在背景更新，下次開啟就是新版
-const VERSION = '8d7cc01302';
-const CACHE = 'rebar-' + VERSION;
-const FONT_CACHE = 'rebar-fonts';
+// 同一個網域下有多個 App，快取名稱帶 App 代號，清舊版時只清自己的
+const APP = 'rebar';
+const VERSION = 'a3e8613fd7';
+const CACHE = APP + '-' + VERSION;
+const FONT_CACHE = 'shared-fonts';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -12,7 +14,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== FONT_CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k.startsWith(APP + '-') && k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
