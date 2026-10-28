@@ -171,7 +171,7 @@ footer { font-size: 12px; color: var(--muted); }
     </ol>
   </details>
 
-  <footer>表值由圖面 PDF 文字層直接抽取；「擴頭錨定時單排梁主筋支數上限」為圖形文字，依放大圖判讀。與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-27</footer>
+  <footer>表值由圖面 PDF 文字層直接抽取；「擴頭錨定時單排梁主筋支數上限」為圖形文字，依放大圖判讀。與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-28</footer>
 </div></main>
 
 <script>
@@ -265,7 +265,7 @@ function render() {
   chipGroup($('c-fy'), fys.map((x) => ({ value: x, label: x })), state.fy, (v) => { state.fy = v; render(); }, { num: true });
   if (mode === 'wire') chipGroup($('c-fc'), FC_WIRE.map((x) => ({ value: x, label: String(x) })), state.wfc, (v) => { state.wfc = v; render(); }, { num: true });
   else chipGroup($('c-fc'), FC_BAR.map((x) => ({ value: x, label: String(x) })), state.fc, (v) => { state.fc = v; render(); }, { num: true });
-  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${b}<small>${BAR_NO[b]}</small>`, disabled: !barOk(b), title: '本表未列' })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
+  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${BAR_NO[b]}<small>${b}</small>`, disabled: !barOk(b), title: '本表未列' })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
   chipGroup($('c-phi'), PHIS.map((p) => ({ value: p, label: p })), state.phi, (v) => { state.phi = v; render(); }, { num: true });
   const bw = $('s-bw');
   if (!bw.options.length) {
@@ -318,18 +318,18 @@ function renderHook() {
 
   [['hA', 'hA'], ['hLw', 'hLw'], ['hEp', 'hEp'], ['sLw', 'sLw']].forEach(([id, k]) => { const el = $(id); if (el) el.onchange = () => { state[k] = el.checked; render(); }; });
 
-  $('sum').innerHTML = `<b>標準彎鉤</b>・${zoneName}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${state.bar}</b>（${BAR_NO[state.bar]}）${fl.length ? '・<b>含修正</b>' : ''}`;
+  $('sum').innerHTML = `<b>標準彎鉤</b>・${zoneName}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${BAR_NO[state.bar]}</b>（${state.bar}）${fl.length ? '・<b>含修正</b>' : ''}`;
   $('cmp-title').textContent = `同條件各號數比較（fy ${state.fy}・fc' ${state.fc}・表值未含修正）`;
   const rows = BARS.map((b) => {
     const n = ldh('non', state.fy, state.fc, b), s = ldh('seis', state.fy, state.fc, b);
     if (!n && !s && ext.A1[b] == null) return '';
     const c = (x) => x ? `${x.v}${x.fallback ? '*' : ''}` : '—';
-    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${b} <span style="opacity:.6">${BAR_NO[b]}</span></td><td>${c(s)}</td><td>${c(n)}</td><td>${ext.A1[b] ?? '—'}</td><td>${ext.A2[b] ?? '—'}</td></tr>`;
+    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${BAR_NO[b]} <span style="opacity:.6">${b}</span></td><td>${c(s)}</td><td>${c(n)}</td><td>${ext.A1[b] ?? '—'}</td><td>${ext.A2[b] ?? '—'}</td></tr>`;
   }).join('');
   $('cmp').innerHTML = `<thead><tr><th>號數</th><th>ℓdh 耐震</th><th>ℓdh 非耐震</th><th>A1</th><th>A2</th></tr></thead><tbody>${rows}</tbody>`;
 
   copyText = [
-    `【HP5 耐震錨定查表】標準彎鉤 ${zoneName} fy=${state.fy} fc'=${state.fc} ${state.bar}(${BAR_NO[state.bar]})`,
+    `【HP5 耐震錨定查表】標準彎鉤 ${zoneName} fy=${state.fy} fc'=${state.fc} ${BAR_NO[state.bar]}(${state.bar})`,
     `ℓdh：${r ? adj + ' cm' + (f !== 1 ? `（表值 ${r.v}，${fl.map(([n, x]) => `${n}×${x.toFixed(2)}`).join('、')}）` : '') : '本表未列'}`,
     `主筋延伸 A1：${ext.A1[state.bar] ?? '—'} cm，A2：${ext.A2[state.bar] ?? '—'} cm`,
     r && r.fallback ? `※ fc'=${state.fc} 不在表列，採 fc'=${r.fc} 表值` : '',
@@ -349,20 +349,20 @@ function renderHead() {
     card('s', '擴頭鋼筋最小中心距', `<div class="val">${(2.5 * db).toFixed(1)}<span class="u">cm</span></div>`, [
       `<div class="note">允許降至 2.5d<sub>b</sub>；柱鋼筋最小淨保護層允許降至 1.5d<sub>b</sub> = ${(1.5 * db).toFixed(1)} cm</div>`]) +
     card('n', `單排梁主筋支數上限・梁寬 ${state.bw} cm`, cnt == null ? '<div class="val na">本表未列</div>' : `<div class="val">${cnt}<span class="u">支</span></div>`, [
-      cnt == null ? '<div class="note">此表僅列 #8、#10、#11（D25、D32、D36）</div>' : `<div class="note">擴頭錨定時，${state.bar}（${BAR_NO[state.bar]}）單排上限</div>`]);
+      cnt == null ? '<div class="note">此表僅列 #8、#10、#11（D25、D32、D36）</div>' : `<div class="note">擴頭錨定時，${BAR_NO[state.bar]}（${state.bar}）單排上限</div>`]);
 
-  $('sum').innerHTML = `<b>擴頭鋼筋</b>・耐震接頭區・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${state.bar}</b>（${BAR_NO[state.bar]}）・梁寬 <b>${state.bw}</b> cm`;
+  $('sum').innerHTML = `<b>擴頭鋼筋</b>・耐震接頭區・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${BAR_NO[state.bar]}</b>（${state.bar}）・梁寬 <b>${state.bw}</b> cm`;
   $('cmp-title').textContent = `同條件各號數比較（fy ${state.fy}・fc' ${state.fc}・梁寬 ${state.bw} cm）`;
   const rows = BARS.map((b) => {
     const x = ldt(state.fy, state.fc, b);
     if (!x) return '';
     const ci2 = COUNT_COL[b];
-    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${b} <span style="opacity:.6">${BAR_NO[b]}</span></td><td>${x.v}${x.fallback ? '*' : ''}</td><td>${(2.5 * DB[b] / 10).toFixed(1)}</td><td>${ci2 ? crow[ci2] : '—'}</td></tr>`;
+    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${BAR_NO[b]} <span style="opacity:.6">${b}</span></td><td>${x.v}${x.fallback ? '*' : ''}</td><td>${(2.5 * DB[b] / 10).toFixed(1)}</td><td>${ci2 ? crow[ci2] : '—'}</td></tr>`;
   }).join('');
   $('cmp').innerHTML = `<thead><tr><th>號數</th><th>ℓdt</th><th>最小中心距</th><th>單排支數</th></tr></thead><tbody>${rows}</tbody>`;
 
   copyText = [
-    `【HP5 耐震錨定查表】擴頭鋼筋 耐震接頭區 fy=${state.fy} fc'=${state.fc} ${state.bar}(${BAR_NO[state.bar]})`,
+    `【HP5 耐震錨定查表】擴頭鋼筋 耐震接頭區 fy=${state.fy} fc'=${state.fc} ${BAR_NO[state.bar]}(${state.bar})`,
     `ℓdt：${r ? r.v + ' cm（未計入擴頭厚度）' : '本表未列'}`,
     `最小中心距：${(2.5 * db).toFixed(1)} cm（2.5db）`,
     cnt != null ? `梁寬 ${state.bw} cm 單排上限：${cnt} 支` : '',
