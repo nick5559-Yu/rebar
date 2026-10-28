@@ -171,7 +171,7 @@ footer { font-size: 12px; color: var(--muted); }
     </ol>
   </details>
 
-  <footer>表值由圖面 PDF 文字層直接抽取，紅字為疑似圖面筆誤、待設計單位確認。與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-27</footer>
+  <footer>表值由圖面 PDF 文字層直接抽取，紅字為疑似圖面筆誤、待設計單位確認。與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-28</footer>
 </div></main>
 
 <script>
@@ -295,7 +295,7 @@ function render() {
   chipGroup($('c-pos'), [{ value: 'top', label: '頂層拉力筋' }, { value: 'gen', label: '一般拉力筋' }], state.pos, (v) => { state.pos = v; render(); });
   chipGroup($('c-fy'), FYS.map((x) => ({ value: x, label: x })), state.fy, (v) => { state.fy = v; render(); }, { num: true });
   chipGroup($('c-fc'), FCS.map((x) => ({ value: x, label: String(x) })), state.fc, (v) => { state.fc = v; render(); }, { num: true });
-  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${b}<small>${barNo(b)}</small>`, disabled: !barAvailable(state.fy, b), title: `fy=${state.fy} 本表未列` })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
+  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${barNo(b)}<small>${b}</small>`, disabled: !barAvailable(state.fy, b), title: `fy=${state.fy} 本表未列` })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
   const envSel = $('s-env');
   if (!envSel.options.length) {
     ENVS.forEach((e) => { const o = document.createElement('option'); o.value = e.id; o.textContent = e.name; envSel.appendChild(o); });
@@ -316,7 +316,7 @@ function render() {
   const changedLd = ld && ldAdj !== ld.v;
   const changedLs = ls && lsAdj !== ls.v;
 
-  $('sum').innerHTML = `<b>${m.name}</b>${m.top ? '・' + posName : ''}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${state.bar}</b>（${barNo(state.bar)}）${fl.length || state.classA ? '・<b>含修正</b>' : ''}`;
+  $('sum').innerHTML = `<b>${m.name}</b>${m.top ? '・' + posName : ''}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${barNo(state.bar)}</b>（${state.bar}）${fl.length || state.classA ? '・<b>含修正</b>' : ''}`;
 
   card($('card-ld'), 'ℓd', '受拉伸展長度', valHtml(ldAdj), [
     changedLd ? `<div class="base">表值 ${ld.v} × ${f.toFixed(2)}，無條件進位</div>` : '',
@@ -342,7 +342,7 @@ function render() {
 
   const db = DATA.bars[state.bar].db / 10;
   const sp = m.comp ? Math.max(4.0, 1.5 * db) : Math.max(2.5, db);
-  card($('card-spec'), state.bar, `${barNo(state.bar)}・d<sub>b</sub> ${DATA.bars[state.bar].db} mm`, `<div class="val">${sp.toFixed(1)}<span class="u">cm</span></div>`, [
+  card($('card-spec'), barNo(state.bar), `${state.bar}・d<sub>b</sub> ${DATA.bars[state.bar].db} mm`, `<div class="val">${sp.toFixed(1)}<span class="u">cm</span></div>`, [
     `<div class="note">${m.comp ? '受壓構材（柱牆）最小淨距 ≥ max(4.0cm, 1.5d<sub>b</sub>)' : '撓曲構材（梁板）最小淨距 ≥ max(2.5cm, 1.0d<sub>b</sub>)'}</div>`,
     '<div class="note">另須 ≥ 粗粒料粒徑 1.33 倍；束筋以 D′ 計</div>']);
 
@@ -350,7 +350,7 @@ function render() {
   renderCompare(m, T, f);
 
   const lines = [
-    `【HP5 錨錠搭接查表】${m.name}${m.top ? ' ' + posName : ''} fy=${state.fy} fc'=${state.fc} ${state.bar}(${barNo(state.bar)})`,
+    `【HP5 錨錠搭接查表】${m.name}${m.top ? ' ' + posName : ''} fy=${state.fy} fc'=${state.fc} ${barNo(state.bar)}(${state.bar})`,
     `ℓd 受拉伸展：${ld ? ldAdj + ' cm' + (changedLd ? `（表值 ${ld.v}）` : '') : '本表未列'}`,
     `ℓst 受拉搭接（${state.classA ? '甲' : '乙'}級）：${ls ? lsAdj + ' cm' + (changedLs ? `（表值 ${ls.v}）` : '') : (state.bar === 'D39' ? 'D39 不可搭接' : '本表未列')}`,
     `最小保護層：${cv} mm（${ENVS.find((e) => e.id === state.env).name}）`,
@@ -399,7 +399,7 @@ function renderCompare(m, T, f) {
     if (!ld) return '';
     const ls = b === 'D39' ? null : look(T.ls, state.fy, state.fc, b);
     const c = (r, none) => r ? `<td class="${r.sus ? 'sus' : ''}" title="${r.sus || ''}">${r.v}${r.fallback ? '*' : ''}${r.sus ? ' ⚠' : ''}</td>` : `<td>${none}</td>`;
-    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${b} <span style="opacity:.6">${barNo(b)}</span></td>${c(ld, '—')}${c(ls, b === 'D39' ? '不可搭接' : '—')}</tr>`;
+    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${barNo(b)} <span style="opacity:.6">${b}</span></td>${c(ld, '—')}${c(ls, b === 'D39' ? '不可搭接' : '—')}</tr>`;
   }).join('');
   $('cmp').innerHTML = `<thead><tr><th>號數</th><th>ℓd</th><th>ℓst</th></tr></thead><tbody>${rows}</tbody>`;
 }
