@@ -64,7 +64,7 @@ h1 { font-size: 20px; font-weight: 900; margin: 0; letter-spacing: .02em; text-w
 
 .panel { background: var(--surface); border-bottom: 1px solid var(--line); }
 .panel .wrap { padding-block: 10px 12px; display: grid; gap: 8px; }
-.row { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; }
+.row { display: grid; grid-template-columns: 70px 1fr; align-items: center; gap: 8px; }
 .row > .lbl { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .06em; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; padding-block: 2px; min-width: 0; }
 .chip {
@@ -118,7 +118,7 @@ summary { cursor: pointer; font-weight: 700; font-size: 14px; }
 details ol { margin: 8px 0 4px; padding-left: 20px; font-size: 13.5px; display: grid; gap: 4px; }
 footer { font-size: 12px; color: var(--muted); }
 @media (min-width: 760px) {
-  .row { grid-template-columns: 64px 1fr; }
+  .row { grid-template-columns: 84px 1fr; }
   .val { font-size: 46px; }
 }
 </style>
@@ -131,8 +131,8 @@ footer { font-size: 12px; color: var(--muted); }
 <section class="panel" aria-label="查詢條件"><div class="wrap">
   <div class="row"><span class="lbl">構件</span><div class="chips" id="c-member" role="group" aria-label="構件"></div></div>
   <div class="row" id="row-pos"><span class="lbl">位置</span><div class="chips" id="c-pos" role="group" aria-label="鋼筋位置"></div></div>
-  <div class="row"><span class="lbl">fy</span><div class="chips" id="c-fy" role="group" aria-label="鋼筋降伏強度"></div></div>
-  <div class="row"><span class="lbl">fc'</span><div class="chips" id="c-fc" role="group" aria-label="混凝土強度"></div></div>
+  <div class="row"><span class="lbl">fy降伏強度</span><div class="chips" id="c-fy" role="group" aria-label="鋼筋降伏強度"></div></div>
+  <div class="row"><span class="lbl">混凝土強度</span><div class="chips" id="c-fc" role="group" aria-label="混凝土強度"></div></div>
   <div class="row"><span class="lbl">號數</span><div class="chips" id="c-bar" role="group" aria-label="鋼筋號數"></div></div>
   <div class="row"><span class="lbl">環境</span><select id="s-env" aria-label="保護層環境條件"></select></div>
 </div></section>
