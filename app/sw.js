@@ -2,7 +2,7 @@
 // 第一次開啟時把整個 App 存到手機，之後沒有網路也能開；有網路時在背景更新，下次開啟就是新版
 // 同一個網域下有多個 App，快取名稱帶 App 代號，清舊版時只清自己的
 const APP = 'rebar';
-const VERSION = 'f7314e0e9f';
+const VERSION = '3f9929d50c';
 const CACHE = APP + '-' + VERSION;
 const FONT_CACHE = 'shared-fonts';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './apple-touch-icon.png', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
