@@ -172,7 +172,7 @@ footer { font-size: 12px; color: var(--muted); }
     </ol>
   </details>
 
-  <footer>表值依圖面判讀輸入，與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-27</footer>
+  <footer>表值依圖面判讀輸入，與圖說不符時以核准圖面為準。fc' 不在表列時，保守採用較低一級 fc' 之表值並標示。<br>離線版・資料版本 2026-10-28</footer>
 </div></main>
 
 <script>
@@ -286,7 +286,7 @@ function render() {
   chipGroup($('c-pos'), [{ value: 'top', label: '頂層拉力筋' }, { value: 'gen', label: '一般拉力筋' }], state.pos, (v) => { state.pos = v; render(); });
   chipGroup($('c-fy'), FYS.map((x) => ({ value: x, label: x })), state.fy, (v) => { state.fy = v; render(); }, { num: true });
   chipGroup($('c-fc'), FCS.map((x) => ({ value: x, label: String(x) })), state.fc, (v) => { state.fc = v; render(); }, { num: true });
-  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${b}<small>${barNo(b)}</small>`, disabled: !barAvailable(state.fy, b), title: `fy=${state.fy} 本表未列` })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
+  chipGroup($('c-bar'), BARS.map((b) => ({ value: b, html: `${barNo(b)}<small>${b}</small>`, disabled: !barAvailable(state.fy, b), title: `fy=${state.fy} 本表未列` })), state.bar, (v) => { state.bar = v; render(); }, { num: true });
   const envSel = $('s-env');
   if (!envSel.options.length) {
     ENVS.forEach((e) => { const o = document.createElement('option'); o.value = e.id; o.textContent = e.name; envSel.appendChild(o); });
@@ -302,7 +302,7 @@ function render() {
   const ldt = rowLookup(DATA.ldt, state.fy, state.fc, state.bar);
   const spec = DATA.bars[state.bar];
 
-  $('sum').innerHTML = `<b>${m.name}</b>${m.top ? '・' + posName : ''}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${state.bar}</b>（${barNo(state.bar)}）`;
+  $('sum').innerHTML = `<b>${m.name}</b>${m.top ? '・' + posName : ''}・fy <b>${state.fy}</b>・fc' <b>${state.fc}</b>・<b>${barNo(state.bar)}</b>（${state.bar}）`;
 
   card($('card-ld'), 'Ld', '受拉錨錠長度', valHtml(ld?.v), [
     `<div class="note">${tblName}・${posName}${state.fy === '2800' && ld ? '・fc\' 210~490 同值' : ''}</div>`, fcNote(ld)]);
@@ -342,7 +342,7 @@ function render() {
     '<div class="note">有橫向鋼筋者量至箍筋表面；無者量至外層主筋表面</div>']);
 
   const db = spec.db / 10;
-  card($('card-spec'), state.bar, `CNS 竹節鋼筋 ${barNo(state.bar)}`, `<dl class="kv">
+  card($('card-spec'), barNo(state.bar), `CNS 竹節鋼筋 ${state.bar}`, `<dl class="kv">
       <dt>直徑 db</dt><dd>${spec.db} mm</dd>
       <dt>斷面積</dt><dd>${spec.area} cm²</dd>
       <dt>單位重</dt><dd>${spec.w.toFixed(3)} kgf/m</dd>
@@ -354,7 +354,7 @@ function render() {
   renderCompare(m);
 
   const lines = [
-    `【鋼筋錨錠查表】${m.name}${m.top ? ' ' + posName : ''} fy=${state.fy} fc'=${state.fc} ${state.bar}(${barNo(state.bar)})`,
+    `【鋼筋錨錠查表】${m.name}${m.top ? ' ' + posName : ''} fy=${state.fy} fc'=${state.fc} ${barNo(state.bar)}(${state.bar})`,
     `Ld 受拉錨錠：${ld ? ld.v + ' cm' : '本表未列'}`,
     `Ls 受拉搭接（乙級）：${ls ? ls.v + ' cm' : '本表未列'}`,
     `Ldh 標準彎鉤：${ldh ? (ldhAdj ?? ldh.v) + ' cm' + (ldhAdj != null ? `（表值 ${ldh.v}×修正）` : '') : '本表未列'}`,
@@ -417,7 +417,7 @@ function renderCompare(m) {
     const ldt = rowLookup(DATA.ldt, state.fy, state.fc, b);
     if (!ld && !ldh && !ldt) return '';
     const c = (r) => r ? r.v + (r.fallback ? '*' : '') : '—';
-    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${b} <span style="opacity:.6">${barNo(b)}</span></td><td>${c(ld)}</td><td>${c(ls)}</td><td>${c(ldh)}</td><td>${c(ldt)}</td><td>${DATA.hookMain[b][0]}</td></tr>`;
+    return `<tr class="${b === state.bar ? 'cur' : ''}"><td>${barNo(b)} <span style="opacity:.6">${b}</span></td><td>${c(ld)}</td><td>${c(ls)}</td><td>${c(ldh)}</td><td>${c(ldt)}</td><td>${DATA.hookMain[b][0]}</td></tr>`;
   }).join('');
   $('cmp').innerHTML = `<thead><tr><th>號數</th><th>Ld</th><th>Ls</th><th>Ldh</th><th>Ldt</th><th>90° L1</th></tr></thead><tbody>${rows}</tbody>`;
 }
