@@ -70,7 +70,7 @@ h1 { font-size: 20px; font-weight: 900; margin: 0; letter-spacing: .02em; text-w
 
 .panel { background: var(--surface); border-bottom: 1px solid var(--line); }
 .panel .wrap { padding-block: 10px 12px; display: grid; gap: 8px; }
-.row { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; }
+.row { display: grid; grid-template-columns: 70px 1fr; align-items: center; gap: 8px; }
 .row > .lbl { font-size: 12px; font-weight: 700; color: var(--muted); letter-spacing: .06em; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; padding-block: 2px; min-width: 0; }
 .chip {
@@ -121,7 +121,7 @@ details ol { margin: 8px 0 4px; padding-left: 20px; font-size: 13.5px; display: 
 details h3 { font-size: 13px; margin: 10px 0 0; color: var(--muted); }
 footer { font-size: 12px; color: var(--muted); }
 @media (min-width: 760px) {
-  .row { grid-template-columns: 64px 1fr; }
+  .row { grid-template-columns: 84px 1fr; }
   .val { font-size: 46px; }
 }
 </style>
@@ -135,8 +135,8 @@ footer { font-size: 12px; color: var(--muted); }
   <div class="modes" id="modes" role="group" aria-label="查詢種類"></div>
   <div class="row" id="row-zone"><span class="lbl">區域</span><div class="chips" id="c-zone" role="group" aria-label="接頭區"></div></div>
   <div class="row" id="row-kind"><span class="lbl">種類</span><div class="chips" id="c-kind" role="group" aria-label="鋼線種類"></div></div>
-  <div class="row" id="row-fy"><span class="lbl">fy</span><div class="chips" id="c-fy" role="group" aria-label="鋼筋降伏強度"></div></div>
-  <div class="row"><span class="lbl">fc'</span><div class="chips" id="c-fc" role="group" aria-label="混凝土強度"></div></div>
+  <div class="row" id="row-fy"><span class="lbl">fy降伏強度</span><div class="chips" id="c-fy" role="group" aria-label="鋼筋降伏強度"></div></div>
+  <div class="row"><span class="lbl">混凝土強度</span><div class="chips" id="c-fc" role="group" aria-label="混凝土強度"></div></div>
   <div class="row" id="row-bar"><span class="lbl">號數</span><div class="chips" id="c-bar" role="group" aria-label="鋼筋號數"></div></div>
   <div class="row" id="row-phi"><span class="lbl">線徑</span><div class="chips" id="c-phi" role="group" aria-label="鋼線線徑"></div></div>
   <div class="row" id="row-bw"><span class="lbl">梁寬</span><select id="s-bw" aria-label="梁寬"></select></div>
